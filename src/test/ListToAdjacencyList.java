@@ -1,6 +1,8 @@
 package test;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -8,14 +10,17 @@ import java.util.List;
  * @author Administrator
  */
 public class ListToAdjacencyList {
-
+	
 	/**
 	 * @param EdgeList File
 	 * @return AdjacencyList
 	 */
-	public List<ArrayList<Integer>> changToAdjList(ArrayList<edge> EdgesList){
+	public List<ArrayList<Integer>> changToAdjList(ArrayList<edge> edgesListSource){
+		
+		ArrayList<edge> EdgesList =(ArrayList<edge>) edgesListSource.clone();
+		Collections.sort(EdgesList, comparator);//排序没成功
 		List<ArrayList<Integer>> resultList = new ArrayList<ArrayList<Integer>>();
-
+		
 		//暂存StartNode
 		int temp = 0;
 		//临时Node链表
@@ -55,4 +60,16 @@ public class ListToAdjacencyList {
 			System.out.println();
 		}
 	}
+	/**
+	 *设置边集合排序，方便邻接表的生成
+	 */
+	private Comparator<edge> comparator = new Comparator<edge>() {
+		public int compare(edge o1, edge o2) {
+			if (o1.getS_node() >= o2.getS_node()) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+	};
 }

@@ -5,9 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 
 import KNNpackage.KNNalog;
 public class read_search {
@@ -28,7 +26,7 @@ public class read_search {
 		return index;
 	}
 	
-	//根据文件信息生成点集Nodes和边集Edges
+	//解析DOT文件信息生成点集Nodes和边集Edges
 	public static void string_process(String oneStr){
 		
 		oneStr = oneStr.substring(oneStr.indexOf('{')+1, oneStr.lastIndexOf('}')).trim();
@@ -44,7 +42,7 @@ public class read_search {
 			
 			//遍历当前点集合是否有重复元素（点）,如果不包含则加入该点的信息
 			if(ser_index(test) == -1){
-			node one = new node(line,test);
+				node one = new node(line,test);
 				Nodes.add(one);
 			}
 		}
@@ -64,6 +62,17 @@ public class read_search {
 			edge one_edge = new edge(ser_index(starts),ser_index(ends),weigh);
 			Edges.add(one_edge);
 			line++;
+		}
+		//重复的边信息，加和去重
+		edge temp =new edge(-1,-1,"0 calls");
+		ArrayList<edge> tempList = (ArrayList<edge>)Edges.clone();
+		for(edge eg : tempList){
+			if(eg.getS_node()==temp.getS_node() && eg.getE_node()==temp.getE_node()){
+				eg.setWeight(eg.getWeight()+temp.getWeight());
+				System.out.println("**********************************************"+temp.getS_node()+" "+temp.getS_node()+" "+temp.getClass());
+				Edges.remove(temp);
+			}
+			temp = eg;
 		}
 		
 	}
@@ -98,14 +107,13 @@ public class read_search {
 			}
 			out.close();
 			
-		}catch(Exception e)
-		{	System.out.println(e.toString());}
+		}catch(Exception e){	System.out.println(e.toString());}
 	}
 	
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
 		try{
-			FileInputStream in = new FileInputStream("E:\\Jworkspace\\expriment\\test\\src\\test\\graphdel7.txt");
+			FileInputStream in = new FileInputStream("E:\\Jworkspace\\expriment\\test\\data\\cflow-1.0.txt");
 			BufferedInputStream input = new BufferedInputStream(in);
 			
 			byte bs[] = new byte[input.available()];
