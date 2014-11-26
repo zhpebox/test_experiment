@@ -8,12 +8,13 @@ public class BDFclass {
 	private static int breadth;
 	private static int depth;
 	private ArrayList<Integer> CurrentQueue;
+	
 	/**
 	 * 处理邻接表，广度优先遍历树
 	 * @param 图中各个节点的邻接表 List<ArrayList<Integer>>
 	 */
-	public void IterateTheArrayList(List<ArrayList<Integer>> result) {
-
+	public ArrayList<BDFResultNode> IterateTheArrayList(List<ArrayList<Integer>> result) {
+		ArrayList<BDFResultNode> BDFResult = new ArrayList<BDFResultNode>(); //结果集
 		// 遍历每个邻接表的头结点，作为当前节点
 		for (ArrayList<Integer> tableLine : result) {
 			//当前邻接表为空跳过该节点
@@ -31,15 +32,24 @@ public class BDFclass {
 			seqQueue.EnQueue(0 - tableLine.get(0).intValue());
 			System.out.println("currentNode is "+currentNode);
 			currentNode = tableLine.get(0);
+			
+			//初始化遍历结果集
+			String nodeResult = "";
+			
 			// 开始遍历当前节点的子树，计算depth和breadth
 			// 2,队列不空，对头出队列
 			while (!seqQueue.isEmpty()) {
 				// 对头出队列，孩子入队列
 				int temp = this.BDF_DeQueue(seqQueue, result);
 				System.out.print(" " + temp);
+				nodeResult = temp+" | ";
 			}
 			System.out.println("\n Node "+currentNode+": breadth is " + breadth + " ; depth is " + depth);
+			//当前节点的遍历结果存入结果集
+			BDFResultNode currentResult = new BDFResultNode(currentNode,breadth,depth,nodeResult);
+			BDFResult.add(currentResult);
 		}
+		return BDFResult;
 	}
 	
 	/**

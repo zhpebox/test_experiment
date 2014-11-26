@@ -114,7 +114,49 @@ public class read_search {
 			
 		}catch(Exception e){	System.out.println(e.toString());}
 	}
-	
+	//输出结果集
+	public static void printResult(ArrayList<Object> result){
+		try{
+			FileOutputStream out = new FileOutputStream("F:\\test_file\\node_BDF_result.doc");
+			String oneline = "";//行输出信息
+			for(int i=0;i<result.size();i++){
+				Class c = result.get(i).getClass();
+			}
+		}catch(Exception e){e.printStackTrace();}
+	}
+	/*
+	public static <T> T jiami(T obj){
+	    	try {
+	    		if(obj != null){
+	    			//1.加载类
+		    		Class c = Class.forName(obj.getClass().toString().replace("class ", ""));
+		    		//2.获取属性名称数组
+		    		Field[] fields=c.getDeclaredFields();
+		    		for(int i = 0;i < fields.length;i++){
+		    			String fieldName = fields[i].getName();
+	    				Class type = fields[i].getType();
+	    				if(type.toString().indexOf("Date")<0){
+		    				String firstLetter = fieldName.substring(0, 1).toUpperCase();
+		    				String getter = "get" + firstLetter + fieldName.substring(1);
+		    				String setter = "set" + firstLetter + fieldName.substring(1);
+		    				Method getMethod = c.getMethod(getter, new Class[]{}); 
+		    				Method setMethod = c.getMethod(setter, new Class[]{type});
+		    				Object value = getMethod.invoke(obj, new Object[] {});
+		    				//加密操作
+		    				if(value != null){
+		    					String decStr = EncryptCoder.encrypt((String)value);
+		    					setMethod.invoke(obj,decStr);
+		    				}
+	    				}
+		    		}	
+	    		}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			return obj;
+		}
+	*/
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
 		try{
@@ -151,13 +193,14 @@ public class read_search {
 		
 		//广度优先遍历
 		BDFclass bdf = new BDFclass();
-		bdf.IterateTheArrayList(resultArray);
-		
+		ArrayList<BDFResultNode> BDFReuslt = bdf.IterateTheArrayList(resultArray);
+		/*
 		System.out.println("\n--------------------------------深度优先遍历");
 		//深度优先遍历
 		DFSclass dfs = new DFSclass();
 		List<ArrayList<Integer>> dfsresult = dfs.IterateListToDFS(resultArray);
 		dfs.PrintOutTheResult(dfsresult);
+		*/
 		
 		//邻接节点
 		HashMap<String,HashMap<String,Integer>> adjNodes = new HashMap<String,HashMap<String,Integer>>();

@@ -2,13 +2,12 @@ package KNNpackage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map.Entry;
 
 import test.node;
 
-public class KNNalog {
-	
+public class KNNReferCategory {
+
 	//所有节点#,可标识当前未被检索的节点
 	private ArrayList<Knode> sourcedata;
 	//所有node的临界点及关联权重信息#<node,<neighbour,weight>>
@@ -79,7 +78,6 @@ public class KNNalog {
 			}
 		}
 		*/
-		
 	}
 	
 	/**
@@ -168,6 +166,7 @@ public class KNNalog {
 		}
 	}
 	
+	
 	//getters  and setters
 	public ArrayList<Knode> getSourcedata() {
 		return sourcedata;
@@ -208,6 +207,5 @@ public class KNNalog {
 			HashMap<String, HashMap<String, Integer>> adjListofNode) {
 		this.adjListofNode = adjListofNode;
 	}
-	
-
+			
 }
