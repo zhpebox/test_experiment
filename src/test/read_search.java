@@ -48,7 +48,7 @@ public class read_search {
 		}
 		
 		//遍历函数中的边信息
-		while(line<source.length){
+		while(line<source.length && source[line].contains("->")){
 			//头节点starts
 			String[] test = source[line].split("->");
 			String starts = test[0].trim();
@@ -58,6 +58,11 @@ public class read_search {
 			//权重weigh
 			String[] weight_test = end_test[1].split("\"");
 			String weigh = weight_test[1].trim();
+			//去掉自己调用自己的边
+			if(starts.equals(ends)) {
+				line++;
+				continue;
+			}
 			//存储到边集合
 			edge one_edge = new edge(ser_index(starts),ser_index(ends),weigh);
 			Edges.add(one_edge);
@@ -69,7 +74,7 @@ public class read_search {
 		for(edge eg : tempList){
 			if(eg.getS_node()==temp.getS_node() && eg.getE_node()==temp.getE_node()){
 				eg.setWeight(eg.getWeight()+temp.getWeight());
-				System.out.println("**********************************************"+temp.getS_node()+" "+temp.getS_node()+" "+temp.getClass());
+			//	System.out.println(" "+temp.getS_node()+" "+temp.getS_node()+" "+temp.getClass());
 				Edges.remove(temp);
 			}
 			temp = eg;
@@ -80,7 +85,7 @@ public class read_search {
 	//输出点集合文件 Nodes
 	public static void print_Nodes(){
 		try{
-			FileOutputStream out = new FileOutputStream("F:\\test_file\\nodes.doc");
+			FileOutputStream out = new FileOutputStream("F:\\test_file\\node_data.doc");
 			
 			String oneline = "";//每次输出的行信息
 			for(int i=0;i<Nodes.size();i++){
@@ -113,7 +118,7 @@ public class read_search {
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
 		try{
-			FileInputStream in = new FileInputStream("E:\\Jworkspace\\expriment\\test\\data\\cflow-1.0.txt");
+			FileInputStream in = new FileInputStream("E:\\Jworkspace\\expriment\\test\\data\\gzip_refresh.data");
 			BufferedInputStream input = new BufferedInputStream(in);
 			
 			byte bs[] = new byte[input.available()];

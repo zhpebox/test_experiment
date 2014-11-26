@@ -29,7 +29,7 @@ public class Queue {
 	//出队列
 	public Integer DeQueue(){
 		Integer result = queueList.get(Qheader);
-	//	不remove了，便于以后节点的查询	
+	//	不remove了，便于以后节点的查询是否遍历过	
 	//	queueList.remove(Qheader);
 		Qheader++;
 		return result;
