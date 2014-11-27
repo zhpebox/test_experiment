@@ -117,7 +117,7 @@ public class read_search {
 		
 		//广度优先遍历
 		BDFclass bdf = new BDFclass();
-		ArrayList<BDFResultNode> BDFReuslt = bdf.IterateTheArrayList(resultArray);
+		ArrayList<BDFResultNode> BDFReuslt = bdf.IterateTheArrayList(resultArray, Nodes);
 		//输出广度优先遍历结果
 		utilBean.printResult(BDFReuslt, "F:\\test_file\\BDF_data.doc");
 		
@@ -129,7 +129,7 @@ public class read_search {
 		dfs.PrintOutTheResult(dfsresult);
 		*/
 		
-		//邻接节点
+		//邻居节点
 		HashMap<String,HashMap<String,Integer>> adjNodes = new HashMap<String,HashMap<String,Integer>>();
 		edgeToNeighbourList edgeNeibour = new edgeToNeighbourList();
 		try {

@@ -13,25 +13,24 @@ public class BDFclass {
 	 * 处理邻接表，广度优先遍历树
 	 * @param 图中各个节点的邻接表 List<ArrayList<Integer>>
 	 */
-	public ArrayList<BDFResultNode> IterateTheArrayList(List<ArrayList<Integer>> result) {
+	public ArrayList<BDFResultNode> IterateTheArrayList(List<ArrayList<Integer>> result,ArrayList<node> nodeList) {
 		ArrayList<BDFResultNode> BDFResult = new ArrayList<BDFResultNode>(); //结果集
 		// 遍历每个邻接表的头结点，作为当前节点
-		for (ArrayList<Integer> tableLine : result) {
+		for (node tableLine : nodeList) {
 			//当前邻接表为空跳过该节点
-			if (tableLine == null || tableLine.size()==0) continue;
+		//	if (tableLine == null || tableLine.size()==0) continue;
 			//每个节点用自己的队列，可以便于每次入队列时候，查询该节点是否已经被遍历过
 			CurrentQueue = new ArrayList<Integer>();
 			//Queue是一个处理方法的集合，真正的队列是 CurrentQueue
 			Queue seqQueue = new Queue(CurrentQueue,0,0);
-			int currentNode = tableLine.get(0);
+			int currentNode = tableLine.getIndex();
 			//初始化广度和广度
 			breadth = 1;
 			depth = 0;
 			
 			// 加结束标记。根节点currentNode EnQueue,取负作为行结束标志
-			seqQueue.EnQueue(0 - tableLine.get(0).intValue());
+			seqQueue.EnQueue(0 -currentNode);
 			System.out.println("currentNode is "+currentNode);
-			currentNode = tableLine.get(0);
 			
 			//初始化遍历结果集
 			String nodeResult = "";
@@ -42,7 +41,7 @@ public class BDFclass {
 				// 对头出队列，孩子入队列
 				int temp = this.BDF_DeQueue(seqQueue, result);
 				System.out.print(" " + temp);
-				nodeResult = nodeResult+","+temp;
+				nodeResult = nodeResult+temp+",";
 			}
 			System.out.println("\nNode "+currentNode+": breadth is " + breadth + " ; depth is " + depth);
 			//当前节点的遍历结果存入结果集
