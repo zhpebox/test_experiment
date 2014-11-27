@@ -42,9 +42,9 @@ public class BDFclass {
 				// 对头出队列，孩子入队列
 				int temp = this.BDF_DeQueue(seqQueue, result);
 				System.out.print(" " + temp);
-				nodeResult = temp+" | ";
+				nodeResult = nodeResult+","+temp;
 			}
-			System.out.println("\n Node "+currentNode+": breadth is " + breadth + " ; depth is " + depth);
+			System.out.println("\nNode "+currentNode+": breadth is " + breadth + " ; depth is " + depth);
 			//当前节点的遍历结果存入结果集
 			BDFResultNode currentResult = new BDFResultNode(currentNode,breadth,depth,nodeResult);
 			BDFResult.add(currentResult);

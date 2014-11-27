@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import util.utilBean;
 import KNNpackage.KNNalog;
 public class read_search {
 	
@@ -28,7 +29,6 @@ public class read_search {
 	
 	//解析DOT文件信息生成点集Nodes和边集Edges
 	public static void string_process(String oneStr){
-		
 		oneStr = oneStr.substring(oneStr.indexOf('{')+1, oneStr.lastIndexOf('}')).trim();
 		//按‘\n’分解成行
 		String[] source = oneStr.split("\n");
@@ -79,84 +79,8 @@ public class read_search {
 			}
 			temp = eg;
 		}
-		
 	}
 	
-	//输出点集合文件 Nodes
-	public static void print_Nodes(){
-		try{
-			FileOutputStream out = new FileOutputStream("F:\\test_file\\node_data.doc");
-			
-			String oneline = "";//每次输出的行信息
-			for(int i=0;i<Nodes.size();i++){
-				node one = (node)Nodes.get(i);
-				oneline = one.getIndex() +"  "+one.getNname() +"\n";
-				out.write(oneline.getBytes());
-			}
-			out.close();
-			
-		}catch(Exception e)
-		{	System.out.println(e.toString());}
-	}
-	
-	//输出边集合文件 Edges
-	public static void print_Edges(){
-		try{
-			FileOutputStream out = new FileOutputStream("F:\\test_file\\edges_data.doc");
-			
-			String oneline = "";//每次输出的行信息
-			for(int i=0;i<Edges.size();i++){
-				edge one = (edge)Edges.get(i);
-				oneline = one.getS_node() +":"+one.getE_node() +":"+one.getWeight()+"\n";
-				out.write(oneline.getBytes());
-			}
-			out.close();
-			
-		}catch(Exception e){	System.out.println(e.toString());}
-	}
-	//输出结果集
-	public static void printResult(ArrayList<Object> result){
-		try{
-			FileOutputStream out = new FileOutputStream("F:\\test_file\\node_BDF_result.doc");
-			String oneline = "";//行输出信息
-			for(int i=0;i<result.size();i++){
-				Class c = result.get(i).getClass();
-			}
-		}catch(Exception e){e.printStackTrace();}
-	}
-	/*
-	public static <T> T jiami(T obj){
-	    	try {
-	    		if(obj != null){
-	    			//1.加载类
-		    		Class c = Class.forName(obj.getClass().toString().replace("class ", ""));
-		    		//2.获取属性名称数组
-		    		Field[] fields=c.getDeclaredFields();
-		    		for(int i = 0;i < fields.length;i++){
-		    			String fieldName = fields[i].getName();
-	    				Class type = fields[i].getType();
-	    				if(type.toString().indexOf("Date")<0){
-		    				String firstLetter = fieldName.substring(0, 1).toUpperCase();
-		    				String getter = "get" + firstLetter + fieldName.substring(1);
-		    				String setter = "set" + firstLetter + fieldName.substring(1);
-		    				Method getMethod = c.getMethod(getter, new Class[]{}); 
-		    				Method setMethod = c.getMethod(setter, new Class[]{type});
-		    				Object value = getMethod.invoke(obj, new Object[] {});
-		    				//加密操作
-		    				if(value != null){
-		    					String decStr = EncryptCoder.encrypt((String)value);
-		    					setMethod.invoke(obj,decStr);
-		    				}
-	    				}
-		    		}	
-	    		}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			return obj;
-		}
-	*/
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
 		try{
@@ -169,14 +93,14 @@ public class read_search {
 			
 			//处理文件中的点集合和边集合
 			string_process(s);
+			input.close();
+			
 			System.out.println("点集合Nodes的大小 = "+Nodes.size());
 			System.out.println("边集合Edges的大小 = "+Edges.size());
 			
 			//输出点集合和边集合的文件
-			print_Nodes();
-			print_Edges();
-			
-			input.close();
+			utilBean.printResult(Nodes, "F:\\test_file\\node_data.doc");
+			utilBean.printResult(Edges, "F:\\test_file\\edges_data.doc");
 		}catch(Exception e){System.out.println(e.toString());}
 		
 		long cost = System.currentTimeMillis()-start;
@@ -194,6 +118,9 @@ public class read_search {
 		//广度优先遍历
 		BDFclass bdf = new BDFclass();
 		ArrayList<BDFResultNode> BDFReuslt = bdf.IterateTheArrayList(resultArray);
+		//输出广度优先遍历结果
+		utilBean.printResult(BDFReuslt, "F:\\test_file\\BDF_data.doc");
+		
 		/*
 		System.out.println("\n--------------------------------深度优先遍历");
 		//深度优先遍历
