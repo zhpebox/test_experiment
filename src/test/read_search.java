@@ -90,7 +90,6 @@ public class read_search {
 		for(edge eg : tempList){
 			if(eg.getS_node()==temp.getS_node() && eg.getE_node()==temp.getE_node()){
 				eg.setWeight(eg.getWeight()+temp.getWeight());
-			//	System.out.println(" "+temp.getS_node()+" "+temp.getS_node()+" "+temp.getClass());
 				Edges.remove(temp);
 			}
 			temp = eg;
@@ -98,6 +97,10 @@ public class read_search {
 	}
 	
 	public static void main(String[] args) {
+	
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//读取DOT文件，得出点集合，边集合，输出到指定文件
+		
 		long start = System.currentTimeMillis();
 		try{
 			FileInputStream in = new FileInputStream("E:\\Jworkspace\\expriment\\test\\data\\gzip_refresh.data");
@@ -117,6 +120,7 @@ public class read_search {
 			//输出点集合和边集合的文件
 			utilBean.printResult(Nodes, "F:\\test_file\\node_data.doc");
 			utilBean.printResult(Edges, "F:\\test_file\\edges_data.doc");
+			
 		}catch(Exception e){System.out.println(e.toString());}
 		
 		long cost = System.currentTimeMillis()-start;
@@ -124,6 +128,7 @@ public class read_search {
 		System.out.println();
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//根据出入度获取邻接表
 		
 		//依据Edges集合获取出入度的邻接表
 		EdgesToArray getInAndOutDegreeList = new EdgesToArray();
@@ -132,21 +137,22 @@ public class read_search {
 		outDegreeList = getInAndOutDegreeList.getOutdegreeArray();
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		
+		//无向图的邻接表
+		/*
 		//边界生成邻接表
 		System.out.println("边界生成邻接表");
 		ListToAdjacencyList changEdge = new ListToAdjacencyList();
 		
 		List<ArrayList<Integer>> resultArray = changEdge.changToAdjList(Edges,Nodes);
 		changEdge.outPutTheResultArray(resultArray);
-	
+		*/
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//按出度邻接表遍历
 		System.out.println("\n--------------------------------广度优先遍历");
 		
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-		//广度优先遍历
+		//无向图广度优先遍历
 		BDFclass bdf = new BDFclass();
-		ArrayList<BDFResultNode> BDFReuslt = bdf.IterateTheArrayList(resultArray, Nodes);
+		ArrayList<BDFResultNode> BDFReuslt = bdf.IterateTheArrayList(outDegreeList, Nodes);
 		//输出广度优先遍历结果
 		utilBean.printResult(BDFReuslt, "F:\\test_file\\BDF_data.doc");
 		
@@ -186,6 +192,8 @@ public class read_search {
 		//设置分类节点
 		 ArrayList<node> cnodes = new  ArrayList<node>();
 			 node temp = new node();
+			 temp.setIndex(1);
+			 cnodes.add(temp);
 			 temp.setIndex(5);
 			 cnodes.add(temp);
 			 temp = new node();

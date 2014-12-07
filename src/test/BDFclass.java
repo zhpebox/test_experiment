@@ -3,6 +3,8 @@ package test;
 import java.util.ArrayList;
 import java.util.List;
 
+import AdjList.AdjArrayObject;
+
 public class BDFclass {
 
 	private static int breadth;
@@ -12,18 +14,19 @@ public class BDFclass {
 	/**
 	 * 处理邻接表，广度优先遍历树
 	 * @param 图中各个节点的邻接表 List<ArrayList<Integer>>
+	 * 修改：2014.12.7 改变参数类型，按照出度来遍历网络，参数改为数组类型，
+	 * 方便查找，直接按照节点的index对应数组下标
 	 */
-	public ArrayList<BDFResultNode> IterateTheArrayList(List<ArrayList<Integer>> result,ArrayList<node> nodeList) {
+	public ArrayList<BDFResultNode> IterateTheArrayList(ArrayList<AdjArrayObject>[] outDegreeList,ArrayList<node> nodeList) {
+		
 		ArrayList<BDFResultNode> BDFResult = new ArrayList<BDFResultNode>(); //结果集
-		// 遍历每个邻接表的头结点，作为当前节点
-		for (node tableLine : nodeList) {
-			//当前邻接表为空跳过该节点
-		//	if (tableLine == null || tableLine.size()==0) continue;
+		// 遍历nodeList，作为当前节点
+		for (node nodeListObj : nodeList) {
 			//每个节点用自己的队列，可以便于每次入队列时候，查询该节点是否已经被遍历过
 			CurrentQueue = new ArrayList<Integer>();
-			//Queue是一个处理方法的集合，真正的队列是 CurrentQueue
+			//Queue是一个处理方法的对象，真正的队列模型是 CurrentQueue，下述初始化CurrentQueue
 			Queue seqQueue = new Queue(CurrentQueue,0,0);
-			int currentNode = tableLine.getIndex();
+			int currentNode = nodeListObj.getIndex();
 			//初始化广度和广度
 			breadth = 1;
 			depth = 0;
@@ -39,7 +42,7 @@ public class BDFclass {
 			// 2,队列不空，对头出队列
 			while (!seqQueue.isEmpty()) {
 				// 对头出队列，孩子入队列
-				int temp = this.BDF_DeQueue(seqQueue, result);
+				int temp = this.BDF_DeQueue(seqQueue, outDegreeList);
 				System.out.print(" " + temp);
 				nodeResult = nodeResult+temp+",";
 			}
@@ -56,10 +59,11 @@ public class BDFclass {
 	 * author ZHP
 	 * 2014年11月26日
 	 * @param seqQueue
-	 * @param result
+	 * @param outDegreeList
 	 * @return
+	 * 2014.12.7 修改了参数类型 从 List 转为数组，增加速度
 	 */
-	public Integer BDF_DeQueue(Queue seqQueue,List<ArrayList<Integer>> result){
+	public Integer BDF_DeQueue(Queue seqQueue,ArrayList<AdjArrayObject>[] outDegreeList ){
 		//lineMark判断当前的是否行结束标志
 		int lineMark = 0;
 		int temp = seqQueue.DeQueue();
@@ -69,27 +73,21 @@ public class BDFclass {
 			depth++;
 		}
 		//孩子入队列，遍历邻接表集合
-		for (ArrayList<Integer> tableLine : result) {
-			int isHasAdjList = 0; //判断是否找到当前节点的邻接表，如找到，处理完，直接跳出循环，不必在往下查找(保证每个节点的邻接表唯一)
-			if (tableLine != null && tableLine.size() != 0) {
-				int getOne = tableLine.get(0);
-				if (temp == getOne) {
-					for (int i = 1; i < tableLine.size(); i++) {
-						//保证孩子节点数大于2，广度才变化
-						if(i>1) breadth++;
-						
-						if(seqQueue.isExistTheSameOne(tableLine.get(i))){
-							continue;
-						}else{
-							seqQueue.EnQueue(tableLine.get(i));
-						}
-					}
-					isHasAdjList = 1;
+			
+		//暂存当前的邻接表
+		ArrayList<AdjArrayObject> currentLine = outDegreeList[temp];
+		if(currentLine!=null && currentLine.size()!=0){
+			for (int i = 0; i < currentLine.size(); i++) {
+				//保证孩子节点数大于2，广度才变化
+				if(i>0) breadth++;
+				if(seqQueue.isExistTheSameOne(currentLine.get(i).getNodeIndex())){
+					continue;
+				}else{
+					seqQueue.EnQueue(currentLine.get(i).getNodeIndex());
 				}
 			}
-			//判断如果找到自己的邻接表，跳出循环
-			if(isHasAdjList!=0) break;
 		}
+		
 		//孩子节点为空的情况下，也将行终结表示加入队列，除非队列为空
 		if(lineMark==1 && !seqQueue.isEmpty()){
 			seqQueue.addLineMark();

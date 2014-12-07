@@ -11,15 +11,22 @@ public class EdgesToArray {
 	private ArrayList<AdjArrayObject>[] outdegreeArray;
 	
 
-
+	/**
+	 * 按照节点的出入度生成邻接表
+	 * author ZHP
+	 * 2014年12月7日
+	 * @param Edges
+	 * @param maxNodeIndex
+	 */
 	public void EdgeToAdjList(ArrayList<edge> Edges,int maxNodeIndex){
+		
 		System.out.println(maxNodeIndex);
 		//初始化，加1 为了保证最后一个节点在数组中有下标相同
 		indegreeArray = new ArrayList[maxNodeIndex+1];
 		outdegreeArray = new ArrayList[maxNodeIndex+1];
 		
 		for(edge e : Edges){
-			System.out.println("-----------------------     "+e.getS_node()+" -> "+e.getE_node()+"   : "+e.getWeight());
+			
 			//出度
 			System.out.println("Out "+e.getS_node());
 			AdjArrayObject outTemp = new AdjArrayObject();
@@ -39,8 +46,20 @@ public class EdgesToArray {
 			indegreeArray[e.getE_node()].add(inTemp);
 			
 		}
-		System.out.println("打印入度邻接表");
-		int is = 0;
+		
+		//打印结果
+		printResult();
+		
+	}
+	
+	/**
+	 * 打印出入度结果集合
+	 * author ZHP
+	 * 2014年12月7日
+	 */
+	public void printResult(){
+		System.out.println("打印\"入度\"邻接表");
+		int is = 0;	//is根据下标标识当前节点
 		for(ArrayList<AdjArrayObject> one  : indegreeArray){
 			System.out.print("\n current node is "+is);
 			if(one == null){
@@ -52,7 +71,7 @@ public class EdgesToArray {
 			}
 			is++;
 		}
-		System.out.println("打印出度邻接表");
+		System.out.println("打印\"出度\"邻接表");
 		is = 0;
 		for(ArrayList<AdjArrayObject> one  : outdegreeArray){
 			System.out.print("\n current node is "+is);
@@ -65,9 +84,7 @@ public class EdgesToArray {
 			}
 			is++;
 		}
-		System.out.println("出入度邻接表处理完成");
 	}
-	
 	
 	public ArrayList<AdjArrayObject>[] getIndegreeArray() {
 		return indegreeArray;
