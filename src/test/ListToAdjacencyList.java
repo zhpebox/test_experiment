@@ -12,10 +12,12 @@ import java.util.List;
 public class ListToAdjacencyList {
 	
 	/**
+	 * 本次邻接表将只考率入度邻居(只根据被依赖的关系分模块)
 	 * @param EdgeList File
 	 * @return AdjacencyList
+	 * （更改，考虑direction ,  遍历方式从针对当前节点循环遍历边，改为一次遍历边集合，给node数据赋值，幅度大大降低）
 	 */
-	public List<ArrayList<Integer>> changToAdjList(ArrayList<edge> edgesListSource){
+	public List<ArrayList<Integer>> changToAdjList(ArrayList<edge> edgesListSource,ArrayList<node> nodeList){
 		
 		ArrayList<edge> EdgesList =(ArrayList<edge>) edgesListSource.clone();
 		Collections.sort(EdgesList, comparator);//排序没成功
@@ -23,7 +25,7 @@ public class ListToAdjacencyList {
 		
 		//暂存StartNode
 		int temp = 0;
-		//临时Node链表
+		//临时Node链表，存储当前节点的邻接点
 		ArrayList<Integer> tempList = new ArrayList<Integer>();
  		//遍历边集合
 		for(edge e: EdgesList){

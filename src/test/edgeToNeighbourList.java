@@ -20,9 +20,14 @@ public class edgeToNeighbourList {
 		edgeToNeighbourList.adjList = adjList;
 	}
 	
-	
-	
-	//compute node's first adjacent node
+	/**
+	 * compute node's first adjacent node
+	 * author ZHP
+	 * 2014Äê12ÔÂ6ÈÕ
+	 * @param Edges
+	 * @return
+	 * @throws Exception
+	 */
 	public HashMap<String,HashMap<String,Integer>> computeAdjNode(ArrayList<edge> Edges) throws Exception{
 		
 		//HashMap<currentNode,HashMap<AdjNode,weight>> just not care for direction
@@ -54,5 +59,7 @@ public class edgeToNeighbourList {
 		}
 		return adjResult;
 	}
+	
+	
 	
 }

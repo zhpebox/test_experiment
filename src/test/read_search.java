@@ -2,19 +2,29 @@ package test;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import util.utilBean;
+import AdjList.AdjArrayObject;
+import AdjList.EdgesToArray;
 import KNNpackage.KNNalog;
 public class read_search {
 	
 	private static ArrayList<node> Nodes = new ArrayList<node>();//存储节点Node
 	private static ArrayList<edge> Edges = new ArrayList<edge>();//存储边Edges
+	private static int MaxNodesIndex  = 0;
+	private static ArrayList<AdjArrayObject>[] inDegreeList ;
+	private static ArrayList<AdjArrayObject>[] outDegreeList;
 	
-	//遍历包含节点的序号
+	/**
+	 * 遍历Nodes集合是否包涵当前节点
+	 * author ZHP
+	 * 2014年12月6日
+	 * @param test节点名称
+	 * @return
+	 */
 	public static int ser_index(String test){
 		int index = -1;
 		for(int i=0;i<Nodes.size();i++){
@@ -27,7 +37,12 @@ public class read_search {
 		return index;
 	}
 	
-	//解析DOT文件信息生成点集Nodes和边集Edges
+	/**
+	 * function 解析DOT文件信息生成点集Nodes和边集Edges
+	 * author ZHP
+	 * 2014年12月6日
+	 * @param oneStr 文件输入流的字符串
+	 */
 	public static void string_process(String oneStr){
 		oneStr = oneStr.substring(oneStr.indexOf('{')+1, oneStr.lastIndexOf('}')).trim();
 		//按‘\n’分解成行
@@ -44,6 +59,7 @@ public class read_search {
 			if(ser_index(test) == -1){
 				node one = new node(line,test);
 				Nodes.add(one);
+				MaxNodesIndex = line;
 			}
 		}
 		
@@ -106,14 +122,27 @@ public class read_search {
 		long cost = System.currentTimeMillis()-start;
 		System.out.println("执行的时间是："+cost);
 		System.out.println();
+		
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		//依据Edges集合获取出入度的邻接表
+		EdgesToArray getInAndOutDegreeList = new EdgesToArray();
+		getInAndOutDegreeList.EdgeToAdjList(Edges, MaxNodesIndex);
+		inDegreeList = getInAndOutDegreeList.getIndegreeArray();
+		outDegreeList = getInAndOutDegreeList.getOutdegreeArray();
+		
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
 		//边界生成邻接表
 		System.out.println("边界生成邻接表");
 		ListToAdjacencyList changEdge = new ListToAdjacencyList();
 		
-		List<ArrayList<Integer>> resultArray = changEdge.changToAdjList(Edges);
+		List<ArrayList<Integer>> resultArray = changEdge.changToAdjList(Edges,Nodes);
 		changEdge.outPutTheResultArray(resultArray);
 	
 		System.out.println("\n--------------------------------广度优先遍历");
+		
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		//广度优先遍历
 		BDFclass bdf = new BDFclass();
@@ -128,6 +157,8 @@ public class read_search {
 		List<ArrayList<Integer>> dfsresult = dfs.IterateListToDFS(resultArray);
 		dfs.PrintOutTheResult(dfsresult);
 		*/
+		
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		//邻居节点
 		HashMap<String,HashMap<String,Integer>> adjNodes = new HashMap<String,HashMap<String,Integer>>();
@@ -148,6 +179,9 @@ public class read_search {
 			}
 		}
 		*/
+		
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
 		KNNalog knn = new KNNalog();
 		//设置分类节点
 		 ArrayList<node> cnodes = new  ArrayList<node>();
@@ -155,10 +189,10 @@ public class read_search {
 			 temp.setIndex(5);
 			 cnodes.add(temp);
 			 temp = new node();
-			 temp.setIndex(17);
+			 temp.setIndex(15);
 			 cnodes.add(temp);
 			 temp = new node();
-			 temp.setIndex(30);
+			 temp.setIndex(26);
 			 cnodes.add(temp);
 		knn.setCategorynode(cnodes);
 		knn.setAdjListofNode(adjNodes);
