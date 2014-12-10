@@ -12,7 +12,7 @@ public class Knode {
 	public boolean equals(Object obj){
 		if(obj instanceof Knode){
 			Knode u = (Knode) obj;
-			return this.nodeName.equals(u.nodeName);
+			return this.getNodeIndex() == u.nodeIndex;
 		}
 		return super.equals(obj);
 	}

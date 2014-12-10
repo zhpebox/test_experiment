@@ -100,7 +100,6 @@ public class read_search {
 	
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//读取DOT文件，得出点集合，边集合，输出到指定文件
-		
 		long start = System.currentTimeMillis();
 		try{
 			FileInputStream in = new FileInputStream("E:\\Jworkspace\\expriment\\test\\data\\gzip_refresh.data");
@@ -194,6 +193,7 @@ public class read_search {
 			 node temp = new node();
 			 temp.setIndex(1);
 			 cnodes.add(temp);
+			 temp = new node();
 			 temp.setIndex(5);
 			 cnodes.add(temp);
 			 temp = new node();
@@ -204,11 +204,14 @@ public class read_search {
 			 cnodes.add(temp);
 		knn.setCategorynode(cnodes);
 		knn.setAdjListofNode(adjNodes);
+		knn.setInDegreeList(inDegreeList);
+		knn.setOutDegreeList(outDegreeList);
 		knn.setSourcedata(Nodes);
 		//初始化集合，将类节点及其邻居分类
 		knn.initKNNdata();
 		//处理剩余节点
 		knn.doKnn();
+		knn.outResultSet();
 		
 	}	
 }
