@@ -2,9 +2,9 @@ package test;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import util.utilBean;
 import AdjList.AdjArrayObject;
@@ -17,6 +17,8 @@ public class read_search {
 	private static int MaxNodesIndex  = 0;
 	private static ArrayList<AdjArrayObject>[] inDegreeList ;
 	private static ArrayList<AdjArrayObject>[] outDegreeList;
+	//按照节点和边生成dot文件
+	private static String newDot = "digraph newDOT { \n";
 	
 	/**
 	 * 遍历Nodes集合是否包涵当前节点
@@ -60,6 +62,7 @@ public class read_search {
 				node one = new node(line,test);
 				Nodes.add(one);
 				MaxNodesIndex = line;
+				newDot  = newDot + line +"  [shape=ellipse] \n";
 			}
 		}
 		
@@ -82,6 +85,7 @@ public class read_search {
 			//存储到边集合
 			edge one_edge = new edge(ser_index(starts),ser_index(ends),weigh);
 			Edges.add(one_edge);
+			newDot = newDot + one_edge.getS_node()  +" -> "+one_edge.getE_node()+"  [label=\""+one_edge.getWeight()+" calls\" fontsize=\"10\"]\n ";
 			line++;
 		}
 		//重复的边信息，加和去重
@@ -96,13 +100,14 @@ public class read_search {
 		}
 	}
 	
+	
 	public static void main(String[] args) {
 	
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//读取DOT文件，得出点集合，边集合，输出到指定文件
 		long start = System.currentTimeMillis();
 		try{
-			FileInputStream in = new FileInputStream("E:\\Jworkspace\\expriment\\test\\data\\gzip_refresh.data");
+			FileInputStream in = new FileInputStream("E:\\Jworkspace\\expriment\\test\\data\\cflow-1.0.data");
 			BufferedInputStream input = new BufferedInputStream(in);
 			
 			byte bs[] = new byte[input.available()];
@@ -117,14 +122,13 @@ public class read_search {
 			System.out.println("边集合Edges的大小 = "+Edges.size());
 			
 			//输出点集合和边集合的文件
-			utilBean.printResult(Nodes, "F:\\test_file\\node_data.doc");
-			utilBean.printResult(Edges, "F:\\test_file\\edges_data.doc");
+			utilBean.printResult(Nodes, "F:\\test_file\\node_data.doc",-1,-1);
+			utilBean.printResult(Edges, "F:\\test_file\\edges_data.doc",-1,-1);
 			
 		}catch(Exception e){System.out.println(e.toString());}
 		
-		long cost = System.currentTimeMillis()-start;
-		System.out.println("执行的时间是："+cost);
-		System.out.println();
+		//输出序号化的dot文件
+		utilBean.outNewDot(newDot,"F:\\test_file\\newDot.data");
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//根据出入度获取邻接表
@@ -153,7 +157,7 @@ public class read_search {
 		BDFclass bdf = new BDFclass();
 		ArrayList<BDFResultNode> BDFReuslt = bdf.IterateTheArrayList(outDegreeList, Nodes);
 		//输出广度优先遍历结果
-		utilBean.printResult(BDFReuslt, "F:\\test_file\\BDF_data.doc");
+		utilBean.printResult(BDFReuslt, "F:\\test_file\\BDF_data.doc",3,3);
 		
 		/*
 		System.out.println("\n--------------------------------深度优先遍历");
@@ -194,13 +198,10 @@ public class read_search {
 			 temp.setIndex(1);
 			 cnodes.add(temp);
 			 temp = new node();
-			 temp.setIndex(5);
+			 temp.setIndex(25);
 			 cnodes.add(temp);
 			 temp = new node();
-			 temp.setIndex(15);
-			 cnodes.add(temp);
-			 temp = new node();
-			 temp.setIndex(26);
+			 temp.setIndex(32);
 			 cnodes.add(temp);
 		knn.setCategorynode(cnodes);
 		knn.setAdjListofNode(adjNodes);
@@ -211,7 +212,12 @@ public class read_search {
 		knn.initKNNdata();
 		//处理剩余节点
 		knn.doKnn();
+		System.out.println("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
 		knn.outResultSet();
 		
+		
+		long cost = System.currentTimeMillis()-start;
+		System.out.println("\n\n执行的时间是："+cost);
+		System.out.println();
 	}	
 }

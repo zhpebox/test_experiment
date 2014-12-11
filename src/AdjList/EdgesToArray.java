@@ -71,7 +71,7 @@ public class EdgesToArray {
 			}
 			is++;
 		}
-		System.out.println("打印\"出度\"邻接表");
+		System.out.println("\n打印\"出度\"邻接表");
 		is = 0;
 		for(ArrayList<AdjArrayObject> one  : outdegreeArray){
 			System.out.print("\n current node is "+is);

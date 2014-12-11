@@ -267,7 +267,7 @@ public class KNNalog {
 		Iterator<Entry<String,HashMap<String,String>>> it = resultMap.entrySet().iterator();
 		while(it.hasNext()){
 			Entry<String,HashMap<String,String>> entry = it.next();
-			System.out.println("\ncurrentNode is "+entry.getKey());
+			System.out.print("\ncurrentNode is "+entry.getKey());
 			HashMap<String,String> adjnode = entry.getValue();
 			for(Entry<String,String> e : adjnode.entrySet()){
 				System.out.print(" ->"+e.getKey()+"  : "+e.getValue()+"    ");
