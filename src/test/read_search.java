@@ -157,7 +157,7 @@ public class read_search {
 		BDFclass bdf = new BDFclass();
 		ArrayList<BDFResultNode> BDFReuslt = bdf.IterateTheArrayList(outDegreeList, Nodes);
 		//输出广度优先遍历结果
-		utilBean.printResult(BDFReuslt, "F:\\test_file\\BDF_data.doc",3,3);
+		utilBean.printResult(BDFReuslt, "F:\\test_file\\BDF_data.doc",-1,-1);
 		
 		/*
 		System.out.println("\n--------------------------------深度优先遍历");
@@ -204,7 +204,7 @@ public class read_search {
 			 temp.setIndex(32);
 			 cnodes.add(temp);
 		knn.setCategorynode(cnodes);
-		knn.setAdjListofNode(adjNodes);
+	//	knn.setAdjListofNode(adjNodes);
 		knn.setInDegreeList(inDegreeList);
 		knn.setOutDegreeList(outDegreeList);
 		knn.setSourcedata(Nodes);
@@ -213,7 +213,7 @@ public class read_search {
 		//处理剩余节点
 		knn.doKnn();
 		System.out.println("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
-		knn.outResultSet();
+		knn.outResultSet(0);
 		
 		
 		long cost = System.currentTimeMillis()-start;

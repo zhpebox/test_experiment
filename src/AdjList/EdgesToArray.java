@@ -28,7 +28,6 @@ public class EdgesToArray {
 		for(edge e : Edges){
 			
 			//出度
-			System.out.println("Out "+e.getS_node());
 			AdjArrayObject outTemp = new AdjArrayObject();
 			outTemp.setNodeIndex(e.getE_node());
 			outTemp.setNodeWeight(e.getWeight());
@@ -37,7 +36,6 @@ public class EdgesToArray {
 			outdegreeArray[e.getS_node()].add(outTemp);
 			
 			//入度
-			System.out.println("Ins "+e.getE_node());
 			AdjArrayObject inTemp = new AdjArrayObject();
 			inTemp.setNodeIndex(e.getS_node());
 			inTemp.setNodeWeight(e.getWeight());

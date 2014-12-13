@@ -140,6 +140,7 @@ public class KNNalog {
 			System.out.println("knode is "+currentNode.getNodeIndex());
 
 			String finalCategory = "";
+			int finalWeight = 0;
 			//类型、权值暂存
 			HashMap<String,Integer> tempResult = new HashMap<String,Integer>();
 			
@@ -173,7 +174,7 @@ public class KNNalog {
 					if(tempResult.containsKey(adjNode.get("category"))){
 						//init过程先忽略权重，仅按照边数
 						//相同分类的邻居数+1
-						tempAdjValue += 1;
+						tempAdjValue += tempResult.get(adjNode.get("category"));
 						if(tempResult.containsKey(adjNode.get("category")+"Weight"))
 							tempWeight += tempResult.get(adjNode.get("category")+"Weight");
 					}
@@ -193,9 +194,10 @@ public class KNNalog {
 					if(e.getKey().contains("Weight")) continue;
 					//如果该类别权重所占比例 大于 0.8*0.8 (至少保证乘积大于0.5即可做决定)
 					System.out.println("/"+((float)e.getValue()/AdjHasCategory) +"/");
-					System.out.println(" "+(float)((e.getValue()/AdjHasCategory)*(AdjHasCategory/indegreeAdjAllNum)));
+					System.out.println(" "+(float)e.getValue()/indegreeAdjAllNum);
 					if(((float)e.getValue()/indegreeAdjAllNum) > 0.5 && !e.getKey().contains("Weight")){
 						finalCategory = e.getKey();
+						finalWeight = e.getValue();
 						break;
 					}
 				}
@@ -219,7 +221,7 @@ public class KNNalog {
 				System.out.println(" Category is "+finalCategory);
 				HashMap<String,String> value = new HashMap<String,String>();
 				value.put("category",finalCategory);
-				value.put("weight","*");
+				value.put("weight",finalWeight+"");
 				resultMap.put(currentNode.getNodeIndex()+"", value);
 				
 				//当然是初次加入结果集的时候，否则第二次，当然会出错，其实也没事，我们不是存在判断语句吗……
@@ -261,17 +263,57 @@ public class KNNalog {
 	 * 输出当前结果集reusultMap的结果
 	 * author ZHP
 	 * 2014年12月8日
+	 * @param outStyle   1：按照类型输出
 	 */
-	public void outResultSet(){
+	public void outResultSet(int outStyle){
 		
 		Iterator<Entry<String,HashMap<String,String>>> it = resultMap.entrySet().iterator();
 		while(it.hasNext()){
 			Entry<String,HashMap<String,String>> entry = it.next();
 			System.out.print("\ncurrentNode is "+entry.getKey());
-			HashMap<String,String> adjnode = entry.getValue();
-			for(Entry<String,String> e : adjnode.entrySet()){
+			HashMap<String,String> resultInfo = entry.getValue();
+			for(Entry<String,String> e : resultInfo.entrySet()){
 				System.out.print(" ->"+e.getKey()+"  : "+e.getValue()+"    ");
 			}
+		}
+		//按类型输出结果
+		if(outStyle !=1){
+			System.out.println("\n\n按类型输出结果集");
+			for(Knode currentCategory : categorynode){
+				it = resultMap.entrySet().iterator();
+				int num = 0;
+				while(it.hasNext()){
+					Entry<String,HashMap<String,String>> entry = it.next();
+					HashMap<String,String> adjnode = entry.getValue();
+					if(entry.getValue().get("category").equals(currentCategory.getCategoryName())){
+						System.out.print("\ncurrentNode is "+entry.getKey());
+						num++;
+						for(Entry<String,String> e : adjnode.entrySet()){
+							System.out.print(" ->"+e.getKey()+"  : "+e.getValue()+"    ");
+						}
+					}
+				}
+				System.out.println("\nZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ   Catagory : "
+							+currentCategory.getCategoryName()+" number =  "+num);
+				
+			}
+			//剩余未分类的节点
+			it = resultMap.entrySet().iterator();
+			int num = 0;
+			while(it.hasNext()){
+				Entry<String,HashMap<String,String>> entry = it.next();
+				HashMap<String,String> adjnode = entry.getValue();
+				if(entry.getValue().get("category").equals("X")){
+					System.out.print("\ncurrentNode is "+entry.getKey());
+					num++;
+					for(Entry<String,String> e : adjnode.entrySet()){
+						System.out.print(" ->"+e.getKey()+"  : "+e.getValue()+"    ");
+					}
+				}
+			}
+			System.out.println("\nZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ   Catagory : "
+						+" X    number =  "+num);
+			
 		}
 	}
 	
