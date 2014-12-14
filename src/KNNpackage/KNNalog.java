@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import AdjList.AdjArrayObject;
 import test.node;
+import util.testQFunction;
 
 /**
  * 更改，将邻接表adjListofNode 替换为 inDegreeList,outDegreeList
@@ -27,6 +28,9 @@ public class KNNalog {
 	private ArrayList<Knode> categorynode;
 	//初始化结果list<node<category,weight>>
 	private HashMap<String,HashMap<String,String>> resultMap;
+	//分类存储结果集
+	private HashMap<String,ArrayList<AdjArrayObject>> categoryResultList;
+	
 	
 	/**
 	 * 根据分类节点，初始化分类结果集，作为备用的训练集
@@ -279,7 +283,10 @@ public class KNNalog {
 		//按类型输出结果
 		if(outStyle !=1){
 			System.out.println("\n\n按类型输出结果集");
+			categoryResultList = new HashMap<String, ArrayList<AdjArrayObject>>();
 			for(Knode currentCategory : categorynode){
+				//暂存当前类别的结果集
+				ArrayList<AdjArrayObject> currentList = new ArrayList<AdjArrayObject>();
 				it = resultMap.entrySet().iterator();
 				int num = 0;
 				while(it.hasNext()){
@@ -291,11 +298,16 @@ public class KNNalog {
 						for(Entry<String,String> e : adjnode.entrySet()){
 							System.out.print(" ->"+e.getKey()+"  : "+e.getValue()+"    ");
 						}
+						//生成节点放入当前List
+						AdjArrayObject cateOne = new AdjArrayObject();
+						cateOne.setNodeIndex(Integer.parseInt(entry.getKey()));
+						cateOne.setNodeWeight(Integer.parseInt(adjnode.get("weight")));
+						currentList.add(cateOne);
 					}
 				}
 				System.out.println("\nZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ   Catagory : "
 							+currentCategory.getCategoryName()+" number =  "+num);
-				
+				categoryResultList.put(currentCategory.getCategoryName(), currentList);
 			}
 			//剩余未分类的节点
 			it = resultMap.entrySet().iterator();
@@ -317,6 +329,13 @@ public class KNNalog {
 		}
 	}
 	
+	public int computeModel(){
+		int reuslt = 1;
+		
+		testQFunction.modelFunction(categoryResultList, inDegreeList, resultMap);
+		
+		return reuslt;
+	}
 	
 	//getters  and setters
 	public ArrayList<Knode> getSourcedata() {

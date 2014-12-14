@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import util.testQFunction;
 import util.utilBean;
 import AdjList.AdjArrayObject;
 import AdjList.EdgesToArray;
@@ -215,6 +216,10 @@ public class read_search {
 		System.out.println("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
 		knn.outResultSet(0);
 		
+		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//模块化函数度量
+		knn.computeModel();		
 		
 		long cost = System.currentTimeMillis()-start;
 		System.out.println("\n\n执行的时间是："+cost);
