@@ -11,7 +11,7 @@ public class utilBean {
 	 * 输出新的dot信息
 	 * author ZHP
 	 * 2014年12月12日
-	 * @param newDot  文件字符串
+	 * @param newDot      文件字符串
 	 * @param outputPath	输出文件路径
 	 */
 	public static void outNewDot(String newDot,String outputPath){
@@ -24,6 +24,19 @@ public class utilBean {
 		
 	}
 
+	/**
+	 * 输出数组链表类型
+	 * author ZHP
+	 * 2014年12月15日
+	 * @param result
+	 * @param outputPath
+	 * @param Scols
+	 * @param Ecols
+	 * @return
+	 */
+	public static <T> T printResult(ArrayList<T>[]  result,String outputPath,int Scols,int Ecols){
+		return null;
+	}
 	/**
 	 * 输出结果集合
 	 * author ZHP

@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import compare.algorithmOne;
+
 import util.testQFunction;
 import util.utilBean;
 import AdjList.AdjArrayObject;
@@ -220,6 +222,16 @@ public class read_search {
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//模块化函数度量
 		knn.computeModel();		
+		
+		
+		algorithmOne aloOne = new algorithmOne();
+		aloOne.setSourcedata(Nodes);
+		aloOne.setInDegreeList(inDegreeList);
+		aloOne.setOutDegreeList(outDegreeList);
+		aloOne.computeAlgorithm();
+		
+		
+		
 		
 		long cost = System.currentTimeMillis()-start;
 		System.out.println("\n\n执行的时间是："+cost);

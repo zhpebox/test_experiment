@@ -67,6 +67,7 @@ public class ListToAdjacencyList {
 	 */
 	private Comparator<edge> comparator = new Comparator<edge>() {
 		public int compare(edge o1, edge o2) {
+			System.out.println("±È½Ï");
 			if (o1.getS_node() >= o2.getS_node()) {
 				return 1;
 			} else {

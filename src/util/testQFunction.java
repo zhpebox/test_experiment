@@ -30,7 +30,7 @@ public class testQFunction {
 						System.out.println(adj.getNodeIndex());
 						if(resultList.contains(adj)){
 							inNum += 1;
-						}else{
+						} else {
 							outNum += 1;
 						}
 					}
