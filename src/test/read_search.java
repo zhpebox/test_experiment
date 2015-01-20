@@ -4,10 +4,12 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
+import clearData.edgeBean;
 import compare.algorithmOne;
-
 import util.testQFunction;
 import util.utilBean;
 import AdjList.AdjArrayObject;
@@ -21,6 +23,17 @@ public class read_search {
 	private static ArrayList<AdjArrayObject>[] inDegreeList ;
 	private static ArrayList<AdjArrayObject>[] outDegreeList;
 	//按照节点和边生成dot文件
+	/**
+	 *设置边集合排序，方便邻接表的生成
+	 */
+	private static  Comparator<InfuNode> comparator = new Comparator<InfuNode>() {
+		public int compare(InfuNode o1, InfuNode o2) {
+			return Integer.compare(o2.getInfValue(), o1.getInfValue());
+		}
+	};
+	
+	
+	
 	private static String newDot = "digraph newDOT { \n";
 	
 	/**
@@ -49,11 +62,13 @@ public class read_search {
 	 * @param oneStr 文件输入流的字符串
 	 */
 	public static void string_process(String oneStr){
+		
 		oneStr = oneStr.substring(oneStr.indexOf('{')+1, oneStr.lastIndexOf('}')).trim();
 		//按‘\n’分解成行
 		String[] source = oneStr.split("\n");
 		//按行（line）遍历文件，
 		int line = 0;
+		int addIndex =0;
 		//遍历文件中的函数变量，以“->”标示结束
 		while(line<source.length && !source[line].contains("->")){
 			String test = source[line].trim();
@@ -62,10 +77,11 @@ public class read_search {
 			
 			//遍历当前点集合是否有重复元素（点）,如果不包含则加入该点的信息
 			if(ser_index(test) == -1){
-				node one = new node(line,test);
+				addIndex++;
+				node one = new node(addIndex,test);
 				Nodes.add(one);
-				MaxNodesIndex = line;
-				newDot  = newDot + line +"  [shape=ellipse] \n";
+				MaxNodesIndex = addIndex;
+				newDot  = newDot + addIndex +"  [shape=ellipse] \n";
 			}
 		}
 		
@@ -110,7 +126,7 @@ public class read_search {
 		//读取DOT文件，得出点集合，边集合，输出到指定文件
 		long start = System.currentTimeMillis();
 		try{
-			FileInputStream in = new FileInputStream("E:\\Jworkspace\\expriment\\test\\data\\cflow-1.0.data");
+			FileInputStream in = new FileInputStream("F:\\test_file\\cflow\\CFLOW\\1.4Exp\\1.4Newgraph.dot");
 			BufferedInputStream input = new BufferedInputStream(in);
 			
 			byte bs[] = new byte[input.available()];
@@ -125,33 +141,47 @@ public class read_search {
 			System.out.println("边集合Edges的大小 = "+Edges.size());
 			
 			//输出点集合和边集合的文件
-			utilBean.printResult(Nodes, "F:\\test_file\\node_data.doc",-1,-1);
-			utilBean.printResult(Edges, "F:\\test_file\\edges_data.doc",-1,-1);
+			utilBean.printResult(Nodes, "F:\\test_file\\cflow\\CFLOW\\1.4Exp\\1.4Nnode_data.doc",-1,-1);
+			utilBean.printResult(Edges, "F:\\test_file\\cflow\\CFLOW\\1.4Exp\\1.4Nedges_data.doc",-1,-1);
 			
 		}catch(Exception e){System.out.println(e.toString());}
 		
 		//输出序号化的dot文件
-		utilBean.outNewDot(newDot,"F:\\test_file\\newDot.data");
+		utilBean.outNewDot(newDot,"F:\\test_file\\cflow\\CFLOW\\1.4Exp\\1.4NnewDot.data");
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//根据出入度获取邻接表
 		
-		//依据Edges集合获取出入度的邻接表
+		//依据Edges集合获取出/入度的邻接表
 		EdgesToArray getInAndOutDegreeList = new EdgesToArray();
 		getInAndOutDegreeList.EdgeToAdjList(Edges, MaxNodesIndex);
 		inDegreeList = getInAndOutDegreeList.getIndegreeArray();
 		outDegreeList = getInAndOutDegreeList.getOutdegreeArray();
 		
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//无向图的邻接表
-		/*
-		//边界生成邻接表
-		System.out.println("边界生成邻接表");
-		ListToAdjacencyList changEdge = new ListToAdjacencyList();
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//输出节点的出度
+		System.out.println("***************************************************************************");
+		System.out.println("输出出度节点的邻居数");
+		for(node outOne : Nodes){
+			ArrayList<AdjArrayObject> currentAdj = outDegreeList[outOne.getIndex()];
+			
+			if(currentAdj==null || currentAdj.size()==0){
+				System.out.println("current Node is "+outOne.getIndex()+"   出度大小0");
+			}else{
+				System.out.println("current Node is "+outOne.getIndex()+"   出度大小"+currentAdj.size());
+			}
+		}
+		//按格式输出
+		for(node outOne : Nodes){
+			ArrayList<AdjArrayObject> currentAdj = outDegreeList[outOne.getIndex()];
+			if(currentAdj==null || currentAdj.size()==0){
+				System.out.println("0");
+			}else{
+				System.out.println(""+currentAdj.size());
+			}
+		}
+		System.out.println("***************************************************************************");
 		
-		List<ArrayList<Integer>> resultArray = changEdge.changToAdjList(Edges,Nodes);
-		changEdge.outPutTheResultArray(resultArray);
-		*/
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//按出度邻接表遍历
 		System.out.println("\n--------------------------------广度优先遍历");
@@ -160,17 +190,21 @@ public class read_search {
 		BDFclass bdf = new BDFclass();
 		ArrayList<BDFResultNode> BDFReuslt = bdf.IterateTheArrayList(outDegreeList, Nodes);
 		//输出广度优先遍历结果
-		utilBean.printResult(BDFReuslt, "F:\\test_file\\BDF_data.doc",-1,-1);
+		utilBean.printResult(BDFReuslt, "F:\\test_file\\cflow\\CFLOW\\1.1Exp\\BDF_data.doc",-1,-1);
+		//加入节点影响力结果集
+		ArrayList<InfuNode> infuList = new ArrayList<InfuNode>();
+		for(BDFResultNode e : BDFReuslt){
+			InfuNode one = new InfuNode();
+			one.setNindex(e.getNodeIndex());
+			one.setInfValue(e.getOutDegree()*e.getNodeBranch());
+			infuList.add(one);
+		}
 		
-		/*
-		System.out.println("\n--------------------------------深度优先遍历");
-		//深度优先遍历
-		DFSclass dfs = new DFSclass();
-		List<ArrayList<Integer>> dfsresult = dfs.IterateListToDFS(resultArray);
-		dfs.PrintOutTheResult(dfsresult);
-		*/
-		
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		for(InfuNode e:infuList ){
+			System.out.println(e.getNindex()+"     "+e.getInfValue());
+		}
+		//对影响力排序
+		Collections.sort(infuList, comparator);
 		
 		//邻居节点
 		HashMap<String,HashMap<String,Integer>> adjNodes = new HashMap<String,HashMap<String,Integer>>();
@@ -179,59 +213,49 @@ public class read_search {
 			adjNodes = edgeNeibour.computeAdjNode(Edges);
 		} catch (Exception e) {e.printStackTrace();}
 		
-		/*
-		//迭代输出一下邻接节点的结果集
-		Iterator<Entry<String,HashMap<String,Integer>>> it = adjNodes.entrySet().iterator();
-		while(it.hasNext()){
-			Entry<String,HashMap<String,Integer>> entry = it.next();
-			System.out.println("\ncurrentNode is "+entry.getKey());
-			HashMap<String,Integer> adjnode = entry.getValue();
-			for(Entry<String,Integer> e : adjnode.entrySet()){
-				System.out.print(" ->"+e.getKey()+"  : "+e.getValue()+"    ");
-			}
-		}
-		*/
-		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		KNNalog knn = new KNNalog();
 		//设置分类节点
-		 ArrayList<node> cnodes = new  ArrayList<node>();
-			 node temp = new node();
-			 temp.setIndex(1);
-			 cnodes.add(temp);
-			 temp = new node();
-			 temp.setIndex(25);
-			 cnodes.add(temp);
-			 temp = new node();
-			 temp.setIndex(32);
-			 cnodes.add(temp);
-		knn.setCategorynode(cnodes);
-	//	knn.setAdjListofNode(adjNodes);
-		knn.setInDegreeList(inDegreeList);
-		knn.setOutDegreeList(outDegreeList);
-		knn.setSourcedata(Nodes);
-		//初始化集合，将类节点及其邻居分类
-		knn.initKNNdata();
-		//处理剩余节点
-		knn.doKnn();
-		System.out.println("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
-		knn.outResultSet(0);
+		ArrayList<node> cnodes = new ArrayList<node>();
+		int topK = 0;
+		float tempQ = 0;
+		float Q = 0;
+		String qStr = "";
+		while (topK < infuList.size() ) {
+			tempQ = Q;
+
+			node temp = new node();
+			temp.setIndex(infuList.get(topK).getNindex());
+			cnodes.add(temp);
+
+			knn.setCategorynode(cnodes);
+			knn.setEdges(Edges);
+			knn.setNodes(Nodes);
+			knn.setInDegreeList(inDegreeList);
+			knn.setOutDegreeList(outDegreeList);
+			knn.setSourcedata(Nodes);
+			// step1
+			knn.initKNNdata();
+			// step2
+			knn.doKnn();
+		//	System.out.println("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
+		//	knn.outResultSet(0);
+
+			// 模块化函数度量
+			Q = knn.computeModel();
+			System.out.print("Q ^^^^ "+Q);
+			qStr += Q + " ";
+			topK++;
+		}
 		
-		
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//模块化函数度量
-		knn.computeModel();		
-		
-		
-		algorithmOne aloOne = new algorithmOne();
-		aloOne.setSourcedata(Nodes);
-		aloOne.setInDegreeList(inDegreeList);
-		aloOne.setOutDegreeList(outDegreeList);
-		aloOne.computeAlgorithm();
-		
-		
-		
+		System.out.println("\nQQQQ"+qStr);
+		//对比试验1
+//		algorithmOne aloOne = new algorithmOne();
+//		aloOne.setSourcedata(Nodes);
+//		aloOne.setInDegreeList(inDegreeList);
+//		aloOne.setOutDegreeList(outDegreeList);
+//		aloOne.computeAlgorithm();
 		
 		long cost = System.currentTimeMillis()-start;
 		System.out.println("\n\n执行的时间是："+cost);

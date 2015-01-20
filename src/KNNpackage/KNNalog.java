@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import AdjList.AdjArrayObject;
+import test.edge;
 import test.node;
 import util.testQFunction;
 
@@ -16,6 +17,8 @@ import util.testQFunction;
  */
 public class KNNalog {
 	
+	private static ArrayList<node> Nodes ;//存储节点Node
+	private static ArrayList<edge> Edges;//存储边Edges
 	//固定sourcedata，列表中的值不会随着执行过程改变
 	private ArrayList<Knode> finalSourcedata;
 	//所有节点#,可标识当前未被检索的节点，随着当前节点被分类，节点会从sourcedata中remove
@@ -32,6 +35,22 @@ public class KNNalog {
 	private HashMap<String,ArrayList<AdjArrayObject>> categoryResultList;
 	
 	
+	public ArrayList<node> getNodes() {
+		return Nodes;
+	}
+
+	public void setNodes(ArrayList<node> nodes) {
+		Nodes = nodes;
+	}
+
+	public ArrayList<edge> getEdges() {
+		return Edges;
+	}
+
+	public void setEdges(ArrayList<edge> edges) {
+		Edges = edges;
+	}
+
 	/**
 	 * 根据分类节点，初始化分类结果集，作为备用的训练集
 	 * author ZHP
@@ -132,7 +151,8 @@ public class KNNalog {
 	 * inputData :    ArrayList<Knode> sourcedata;
 	 * author ZHP
 	 * 2014年11月23日
-	 * 更改 2014.12.08( 将邻居节点的查询从所有的邻居变到遍历当前节点的入度)
+	 * 更改 2014.12.08( 将邻居节点的查询从所有的邻居变到遍历当前节点的入度)\
+	 *  remain是否考虑权重
 	 */
 	public void knnOtherNode(int remain){
 		//遍历sourcedata处理当前未被分类的节点，存在冲突的节点可能又被返回到source，但在结果集中上存在
@@ -329,12 +349,12 @@ public class KNNalog {
 		}
 	}
 	
-	public int computeModel(){
-		int reuslt = 1;
+	public float computeModel(){
 		
-		testQFunction.modelFunction(categoryResultList, inDegreeList, resultMap);
+		int totalWeight =1;
+		testQFunction Q = new testQFunction(resultMap, finalSourcedata, Nodes, Edges, inDegreeList, outDegreeList);
 		
-		return reuslt;
+		return Q.softwareQFunction();
 	}
 	
 	//getters  and setters

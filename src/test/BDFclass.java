@@ -9,6 +9,7 @@ public class BDFclass {
 
 	private static int breadth;
 	private static int depth;
+	private static int outDegree;
 	private ArrayList<Integer> CurrentQueue;
 	
 	/**
@@ -30,6 +31,7 @@ public class BDFclass {
 			//初始化广度和广度
 			breadth = 1;
 			depth = 0;
+			outDegree = outDegreeList[nodeListObj.getIndex()]==null?0:outDegreeList[nodeListObj.getIndex()].size();
 			
 			// 加结束标记。根节点currentNode EnQueue,取负作为行结束标志
 			seqQueue.EnQueue(0 -currentNode);
@@ -48,7 +50,7 @@ public class BDFclass {
 			}
 			System.out.println("\nNode "+currentNode+": breadth is " + breadth + " ; depth is " + depth);
 			//当前节点的遍历结果存入结果集
-			BDFResultNode currentResult = new BDFResultNode(currentNode,breadth,depth,nodeResult);
+			BDFResultNode currentResult = new BDFResultNode(currentNode,breadth,depth,outDegree,nodeResult);
 			BDFResult.add(currentResult);
 		}
 		return BDFResult;
