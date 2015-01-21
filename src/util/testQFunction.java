@@ -26,6 +26,8 @@ public class testQFunction {
 	private  int[][] adjMatrix;
 	private  int totalWeight = 1; //所有边的权重之和
 
+	
+	
 
 	public testQFunction(
 			HashMap<String, HashMap<String, String>> resultMap,
@@ -42,6 +44,7 @@ public class testQFunction {
 		int total = 0;
 		for(edge e:Edges){
 			total += e.getWeight();
+			System.out.println(total+"  "+e.getWeight());
 		}
 		this.totalWeight = total;
 		this.genMatrix();
@@ -70,39 +73,6 @@ public class testQFunction {
 		}
 	}
 	
-/*	public  int modelFunction(HashMap<String, ArrayList<AdjArrayObject>> categoryResultList,
-			ArrayList<AdjArrayObject>[] outDegreeList,HashMap<String,HashMap<String,String>> resultMap){
-		
-		int result = 1;
-
-		for(Entry<String,ArrayList<AdjArrayObject>> oneCateList : categoryResultList.entrySet()){
-			
-			System.out.println("The Category is "+ oneCateList.getKey());
-			int inNum = 0;
-			int outNum = 0;
-			ArrayList<AdjArrayObject> resultList = oneCateList.getValue();
-			for(AdjArrayObject node : resultList){
-				System.out.println("    node is  "+node.getNodeIndex()+"     Weight "+node.getNodeWeight());
-				//按照模块中的每个节点的出度内外比例计算
-				ArrayList<AdjArrayObject> list = outDegreeList[node.getNodeIndex()];
-				if(list!=null && list.size()!=0){
-					for(AdjArrayObject adj : list){
-						System.out.println(adj.getNodeIndex());
-						if(resultList.contains(adj)){
-							inNum += 1;
-						} else {
-							outNum += 1;
-						}
-					}
-				}else{
-					continue;
-				}
-			}
-			System.out.println("  in = "+inNum+"  out = "+outNum);
-		}
-		return 0;
-	}*/
-	
 	/**
 	 *克洛内克函数,比较两个节点的类别相同与否，相同得1，不同得0
 	 * author ZHP
@@ -112,9 +82,14 @@ public class testQFunction {
 	 * @return
 	 */
 	public  int KroneckerFun(Knode one, Knode two){
-		
-		String oneCategory =  resultMap.get(one.getNodeIndex()+"").get("category");
-		String twoCategory =  resultMap.get(two.getNodeIndex()+"").get("category");
+		String oneCategory = "";
+		String twoCategory = "";
+		if(resultMap.containsKey(one.getNodeIndex()+"")){
+			oneCategory =  resultMap.get(one.getNodeIndex()+"").get("category");
+		}
+		if(resultMap.containsKey(two.getNodeIndex()+"")){
+			twoCategory =  resultMap.get(two.getNodeIndex()+"").get("category");
+		}
 		if(oneCategory.equals(twoCategory)){
 			return 1;
 		}else{
@@ -135,6 +110,7 @@ public class testQFunction {
 		
 		for(Knode start : sourcedata){ //双层循环遍历，逐个求
 			for(Knode end : sourcedata){
+				System.out.println(start.getNodeIndex()+"   "+end.getNodeIndex());
 				int out = 0;
 				if(outDegreeList[start.getNodeIndex()]!=null){
 					for(AdjArrayObject e : outDegreeList[start.getNodeIndex()]){
@@ -148,11 +124,60 @@ public class testQFunction {
 					}
 				}
 				int existWeight = adjMatrix[start.getNodeIndex()-1][end.getNodeIndex()-1] ;
-				
-				Q_gen += (existWeight - out*in/totalWeight ) *KroneckerFun(start, end);
+				Q_gen += (existWeight - (float)out*in/totalWeight ) *KroneckerFun(start, end);
+				System.out.println("("+existWeight+" -"+out+" *  "+in+"  /  "+totalWeight+")  * "+KroneckerFun(start, end)+
+						"   "+(existWeight - (float)out*in/totalWeight ) *KroneckerFun(start, end)
+						+"   "+Q_gen);
 			}
 		}
 		Q_gen = Q_gen/totalWeight;
 		return Q_gen;
+	}
+	
+	
+	/**
+	 * 不同于Q函数，我们根据软件的高内聚、低耦合定义了一个衡量标准
+	 */
+	public int modelFunction(
+			HashMap<String, ArrayList<AdjArrayObject>> categoryResultList,
+			ArrayList<AdjArrayObject>[] outDegreeList,
+			HashMap<String, HashMap<String, String>> resultMap) {
+
+		int result = 1;
+		for (Entry<String, ArrayList<AdjArrayObject>> oneCateList : categoryResultList
+				.entrySet()) {
+
+			System.out.println("The Category is "
+					+ oneCateList.getKey());
+			int inNum = 0;
+			int outNum = 0;
+			ArrayList<AdjArrayObject> resultList = oneCateList
+					.getValue();
+			for (AdjArrayObject node : resultList) {
+				System.out.println("    node is  "
+						+ node.getNodeIndex()
+						+ "     Weight "
+						+ node.getNodeWeight());
+				// 按照模块中的每个节点的出度内外比例计算
+				ArrayList<AdjArrayObject> list = outDegreeList[node
+						.getNodeIndex()];
+				if (list != null && list.size() != 0) {
+					for (AdjArrayObject adj : list) {
+						System.out.println(adj
+								.getNodeIndex());
+						if (resultList.contains(adj)) {
+							inNum += 1;
+						} else {
+							outNum += 1;
+						}
+					}
+				} else {
+					continue;
+				}
+			}
+			System.out.println("  in = " + inNum + "  out = "
+					+ outNum);
+		}
+		return 0;
 	}
 }

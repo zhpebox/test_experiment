@@ -9,6 +9,7 @@ import AdjList.AdjArrayObject;
 import test.edge;
 import test.node;
 import util.testQFunction;
+import util.testQunweight;
 
 /**
  * 更改，将邻接表adjListofNode 替换为 inDegreeList,outDegreeList
@@ -351,9 +352,9 @@ public class KNNalog {
 	
 	public float computeModel(){
 		
-		int totalWeight =1;
 		testQFunction Q = new testQFunction(resultMap, finalSourcedata, Nodes, Edges, inDegreeList, outDegreeList);
-		
+		testQunweight UQ = new testQunweight(resultMap, finalSourcedata, Nodes, Edges, inDegreeList, outDegreeList);
+//		return UQ.softwareQFunction();
 		return Q.softwareQFunction();
 	}
 	
