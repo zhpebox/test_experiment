@@ -121,9 +121,9 @@ public class read_search {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//读取DOT文件，得出点集合，边集合，输出到指定文件
 		long start = System.currentTimeMillis();
-		try{//F:\\test_file\\TAR\\tar-1.21Expriment\\1.21Newgraph.dot  F:\test_file\cflow\CFLOW\1.0Exp 
+		try{//E:\\finalexp\\cflow\\10\\
 			//F:\\test_file\\cflow\\CFLOW\\1.1Exp\\1.1Newgraph.dot
-			FileInputStream in = new FileInputStream("F:\\test_file\\cflow\\CFLOW\\1.0Exp\\1.0Newgraph.dot");
+			FileInputStream in = new FileInputStream("E:\\finalexp\\cflow\\14\\1.4Newgraph.dot");
 			BufferedInputStream input = new BufferedInputStream(in);
 			
 			byte bs[] = new byte[input.available()];
@@ -138,13 +138,14 @@ public class read_search {
 			System.out.println("边集合Edges的大小 = "+Edges.size());
 			
 			//输出点集合和边集合的文件
-			utilBean.printResult(Nodes, "F:\\test_file\\cflow\\CFLOW\\1.0Exp\\1.0Nnode_data.doc",-1,-1);
-			utilBean.printResult(Edges, "F:\\test_file\\cflow\\CFLOW\\1.0Exp\\1.0Nedges_data.doc",-1,-1);
+			utilBean.printResult(Nodes, "E:\\finalexp\\cflow\\14\\1.4Nnode_data.doc",-1,-1);
+			utilBean.printResult(Edges, "E:\\finalexp\\cflow\\14\\1.4Nedges_data.doc",-1,-1);
 			
 		}catch(Exception e){System.out.println(e.toString());}
 		
 		//输出序号化的dot文件
-		utilBean.outNewDot(newDot,"F:\\test_file\\cflow\\CFLOW\\1.0Exp\\1.0NnewDot.dot");
+		newDot =newDot + " \n }";
+		utilBean.outNewDot(newDot,"E:\\finalexp\\cflow\\14\\1.4NnewDot.dot");
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//根据出入度获取邻接表
@@ -187,7 +188,7 @@ public class read_search {
 		BDFclass bdf = new BDFclass();
 		ArrayList<BDFResultNode> BDFReuslt = bdf.IterateTheArrayList(outDegreeList, Nodes);
 		//输出广度优先遍历结果
-		utilBean.printResult(BDFReuslt, "F:\\test_file\\cflow\\CFLOW\\1.1Exp\\BDF_data.doc",-1,-1);
+		utilBean.printResult(BDFReuslt, "E:\\finalexp\\cflow\\14\\1.4BDF_data.doc",-1,-1);
 		//加入节点影响力结果集
 		ArrayList<InfuNode> infuList = new ArrayList<InfuNode>();
 		for(BDFResultNode e : BDFReuslt){
@@ -197,18 +198,22 @@ public class read_search {
 			infuList.add(one);
 		}
 		
+		//对影响力排序
+		Collections.sort(infuList, comparator);
+
+		utilBean.printResult(infuList, "E:\\finalexp\\cflow\\14\\1.4NodeInflu.doc", -1, -1);
+		
+		System.out.println("节点影响力排序");
 		for(InfuNode e:infuList ){
 			System.out.println(e.getNindex()+"     "+e.getInfValue());
 		}
-		//对影响力排序
-		Collections.sort(infuList, comparator);
 		
 		//邻居节点
-		HashMap<String,HashMap<String,Integer>> adjNodes = new HashMap<String,HashMap<String,Integer>>();
+		/*HashMap<String,HashMap<String,Integer>> adjNodes = new HashMap<String,HashMap<String,Integer>>();
 		edgeToNeighbourList edgeNeibour = new edgeToNeighbourList();
 		try {
 			adjNodes = edgeNeibour.computeAdjNode(Edges);
-		} catch (Exception e) {e.printStackTrace();}
+		} catch (Exception e) {e.printStackTrace();}*/
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
@@ -220,6 +225,7 @@ public class read_search {
 		float Q = 0;
 		String qStr = "";
 		while (topK < infuList.size() ) {
+			
 			tempQ = Q;
 
 			node temp = new node();
@@ -236,8 +242,6 @@ public class read_search {
 			knn.initKNNdata();
 			// step2
 			knn.doKnn();
-		//	System.out.println("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
-		//	knn.outResultSet(0);
 
 			// 模块化函数度量
 			Q = knn.computeModel();

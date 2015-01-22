@@ -144,27 +144,20 @@ public class testQFunction {
 			HashMap<String, HashMap<String, String>> resultMap) {
 
 		int result = 1;
-		for (Entry<String, ArrayList<AdjArrayObject>> oneCateList : categoryResultList
-				.entrySet()) {
+		for (Entry<String, ArrayList<AdjArrayObject>> oneCateList : categoryResultList.entrySet()) {
 
-			System.out.println("The Category is "
-					+ oneCateList.getKey());
+			System.out.println("The Category is " + oneCateList.getKey());
 			int inNum = 0;
 			int outNum = 0;
-			ArrayList<AdjArrayObject> resultList = oneCateList
-					.getValue();
+			ArrayList<AdjArrayObject> resultList = oneCateList.getValue();
 			for (AdjArrayObject node : resultList) {
-				System.out.println("    node is  "
-						+ node.getNodeIndex()
-						+ "     Weight "
-						+ node.getNodeWeight());
+				System.out.println("    node is  " + node.getNodeIndex() + "     Weight " + node.getNodeWeight());
 				// 按照模块中的每个节点的出度内外比例计算
 				ArrayList<AdjArrayObject> list = outDegreeList[node
 						.getNodeIndex()];
 				if (list != null && list.size() != 0) {
 					for (AdjArrayObject adj : list) {
-						System.out.println(adj
-								.getNodeIndex());
+						System.out.println(adj.getNodeIndex());
 						if (resultList.contains(adj)) {
 							inNum += 1;
 						} else {
@@ -175,8 +168,7 @@ public class testQFunction {
 					continue;
 				}
 			}
-			System.out.println("  in = " + inNum + "  out = "
-					+ outNum);
+			System.out.println("  in = " + inNum + "  out = " + outNum);
 		}
 		return 0;
 	}

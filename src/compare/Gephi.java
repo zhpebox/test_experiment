@@ -33,7 +33,7 @@ public class Gephi {
 		//按行（line）遍历文件，
 		
 		for(String sline : source){
-			String[] lineData = sline.split("/");
+			String[] lineData = sline.split(" ");
 			HashMap<String, String> mapvalue = new HashMap<String, String>();
 			mapvalue.put("category",lineData[1]);
 			resultMap.put(lineData[0], mapvalue);
@@ -43,7 +43,7 @@ public class Gephi {
 	
 	public void getFileIn(){
 		try{
-			FileInputStream in = new FileInputStream("F:\\GephiData.txt");
+			FileInputStream in = new FileInputStream("E:\\finalexp\\GephiAlgorithm.txt");
 			BufferedInputStream input = new BufferedInputStream(in);
 			
 			byte bs[] = new byte[input.available()];
