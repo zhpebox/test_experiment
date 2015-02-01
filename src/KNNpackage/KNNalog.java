@@ -367,10 +367,12 @@ public class KNNalog {
 	public void outCataListResult(){
 //		categoryResultList = new HashMap<String, ArrayList<AdjArrayObject>>();
 		Iterator<Entry<String,ArrayList<AdjArrayObject>>> it = categoryResultList.entrySet().iterator();
+		int num = categoryResultList.size();
 		while(it.hasNext()){
 			Entry<String,ArrayList<AdjArrayObject>> entry = it.next();
 			System.out.println("类型：  "+entry.getKey()+" 数量：  "+entry.getValue().size());
 		}
+		System.out.println("总共  "+num+" 数量 个 类型");
 	}
 	
 	public float computeModel(){

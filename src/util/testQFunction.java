@@ -89,6 +89,29 @@ public class testQFunction {
 		if(resultMap.containsKey(two.getNodeIndex()+"")){
 			twoCategory =  resultMap.get(two.getNodeIndex()+"").get("category");
 		}
+		if(oneCategory.equals(twoCategory)){
+			return 1;
+		}else{
+			return 0;
+		}
+	}
+	/**
+	 *克洛内克函数,比较两个节点的类别相同与否，相同得1，不同得0
+	 * author ZHP
+	 * 2015年1月19日
+	 * @param one
+	 * @param two
+	 * @return
+	 */
+	public  int KroneckerFuns(Knode one, Knode two){
+		String oneCategory = "";
+		String twoCategory = "";
+		if(resultMap.containsKey(one.getNodeIndex()+"")){
+			oneCategory =  resultMap.get(one.getNodeIndex()+"").get("category");
+		}
+		if(resultMap.containsKey(two.getNodeIndex()+"")){
+			twoCategory =  resultMap.get(two.getNodeIndex()+"").get("category");
+		}
 		if(oneCategory.equals(twoCategory) || oneCategory.equals("X") || twoCategory.equals("X")){
 			return 1;
 		}else{
@@ -179,7 +202,7 @@ public class testQFunction {
 			for(String e : adj){
 				Knode outnode = new Knode();
 				outnode.setNodeIndex(Integer.parseInt(e));
-				if(KroneckerFun(node, outnode)==1){
+				if(KroneckerFuns(node, outnode)==1){
 					in += 1;
 				}else{
 					out += 1;

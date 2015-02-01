@@ -121,10 +121,11 @@ public class read_search {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//读取DOT文件，得出点集合，边集合，输出到指定文件
 		long start = System.currentTimeMillis();
-		String path = "121\\121";
+		String path = "128\\128";
+		String softStr = "tar\\";
 		try{//"E:\\finalexp\\tar\\"+path+"Newgraph.dot"
 			//F:\\test_file\\cflow\\CFLOW\\1.1Exp\\1.1Newgraph.dot
-			FileInputStream in = new FileInputStream("E:\\finalexp\\tar\\"+path+"Newgraph.dot");
+			FileInputStream in = new FileInputStream("E:\\finalexp\\"+softStr+path+"Newgraph.dot");
 			BufferedInputStream input = new BufferedInputStream(in);
 			
 			byte bs[] = new byte[input.available()];
@@ -139,14 +140,14 @@ public class read_search {
 			System.out.println("边集合Edges的大小 = "+Edges.size());
 			
 			//输出点集合和边集合的文件
-			utilBean.printResult(Nodes, "E:\\finalexp\\tar\\"+path+"Nnode_data.doc",-1,-1);
-			utilBean.printResult(Edges, "E:\\finalexp\\tar\\"+path+"Nedges_data.doc",-1,-1);
+			utilBean.printResult(Nodes, "E:\\finalexp\\"+softStr+path+"Nnode_data.doc",-1,-1);
+			utilBean.printResult(Edges, "E:\\finalexp\\"+softStr+path+"Nedges_data.doc",-1,-1);
 			
 		}catch(Exception e){System.out.println(e.toString());}
 		
 		//输出序号化的dot文件
 		newDot =newDot + " \n }";
-		utilBean.outNewDot(newDot,"E:\\finalexp\\tar\\"+path+"NnewDot.dot");
+		utilBean.outNewDot(newDot,"E:\\finalexp\\"+softStr+path+"NnewDot.dot");
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//根据出入度获取邻接表
@@ -189,7 +190,7 @@ public class read_search {
 		BDFclass bdf = new BDFclass();
 		ArrayList<BDFResultNode> BDFReuslt = bdf.IterateTheArrayList(outDegreeList, Nodes);
 		//输出广度优先遍历结果
-		utilBean.printResult(BDFReuslt, "E:\\finalexp\\tar\\"+path+"BDF_data.doc",-1,-1);
+		utilBean.printResult(BDFReuslt, "E:\\finalexp\\"+softStr+path+"BDF_data.doc",-1,-1);
 		//加入节点影响力结果集
 		ArrayList<InfuNode> infuList = new ArrayList<InfuNode>();
 		for(BDFResultNode e : BDFReuslt){
@@ -202,7 +203,7 @@ public class read_search {
 		//对影响力排序
 		Collections.sort(infuList, comparator);
 
-		utilBean.printResult(infuList, "E:\\finalexp\\tar\\"+path+"NodeInflu.doc", -1, -1);
+		utilBean.printResult(infuList, "E:\\finalexp\\"+softStr+path+"NodeInflu.doc", -1, -1);
 		///////////////////////////////////////////////////////////////////OVER
 		System.out.println("节点影响力排序");
 		for(InfuNode e:infuList ){
@@ -234,10 +235,10 @@ public class read_search {
 			temp.setIndex(infuList.get(topK).getNindex());
 			cnodes.add(temp);
 			
-//			//BDF重新计算广度优先遍历
-//			BDFclass bdfExcludeCore= new BDFclass();
-//			bdfExcludeCore.setCnodes(cnodes);
-//			ArrayList<BDFResultNode> BDFReusltExculdCore = bdfExcludeCore.IterateTheArrayListExcludeCore(outDegreeList, Nodes);
+			//BDF重新计算广度优先遍历
+			BDFclass bdfExcludeCore= new BDFclass();
+			bdfExcludeCore.setCnodes(cnodes);
+			ArrayList<BDFResultNode> BDFReusltExculdCore = bdfExcludeCore.IterateTheArrayListExcludeCore(outDegreeList, Nodes);
 			
 			knn.setEdges(Edges);
 			knn.setNodes(Nodes);
@@ -245,7 +246,7 @@ public class read_search {
 			knn.setOutDegreeList(outDegreeList);
 			knn.setSourcedata(Nodes);
 			
-		//	knn.setBDFReuslt(BDFReusltExculdCore);
+			knn.setBDFReuslt(BDFReusltExculdCore);
 			
 			knn.setCategorynode(cnodes);
 			
@@ -271,10 +272,10 @@ public class read_search {
 			
 //			//输出结果集
 //			System.out.println("*************************************************************************************************");
-//			knn.outResultSet(0);
-//			System.out.println("*************************************************************************************************");
-//			knn.outCataListResult();
-//			System.out.println("*************************************************************************************************");
+			knn.outResultSet(0);
+			System.out.println("*************************************************************************************************");
+			knn.outCataListResult();
+			System.out.println("*************************************************************************************************");
 		}
 		
 		System.out.println("\nQQQQ"+qStr);
@@ -296,9 +297,11 @@ public class read_search {
 		knn.initKNNdata();
 		// step2
 		knn.doKnn();
-		float outDegree = knn.computeOUT();
-		System.out.println("\nBDF dependence is " + outDegree);
 		
+		float outDegree = knn.computeOUT();
+		System.out.println("\n Q value is "+MaxQ);
+		System.out.println("BDF dependence is " + outDegree);
+		knn.outResultSet(0);
 		knn.outCataListResult();
 		System.out.println("*************************************************************************************************");
 		
