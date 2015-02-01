@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import test.BDFResultNode;
 import test.edge;
 import test.node;
 import AdjList.AdjArrayObject;
@@ -22,13 +23,11 @@ public class testQFunction {
 	private  ArrayList<edge> Edges;//存储边Edges
 	private  ArrayList<AdjArrayObject>[] inDegreeList;
 	private  ArrayList<AdjArrayObject>[] outDegreeList;
-	
 	private  int[][] adjMatrix;
 	private  int totalWeight = 1; //所有边的权重之和
 
+	private ArrayList<BDFResultNode> BDFReuslt  = new ArrayList<BDFResultNode>();
 	
-	
-
 	public testQFunction(
 			HashMap<String, HashMap<String, String>> resultMap,
 			ArrayList<Knode> sourcedata, ArrayList<node> nodes,
@@ -64,7 +63,7 @@ public class testQFunction {
 				adjMatrix[i][j] =0;
 			}
 		}
-		//更新已有边信息
+		//更新已有边信息   
 		for(edge e : Edges){
 			int start = e.getS_node();
 			int end = e.getE_node();
@@ -90,7 +89,7 @@ public class testQFunction {
 		if(resultMap.containsKey(two.getNodeIndex()+"")){
 			twoCategory =  resultMap.get(two.getNodeIndex()+"").get("category");
 		}
-		if(oneCategory.equals(twoCategory)){
+		if(oneCategory.equals(twoCategory) || oneCategory.equals("X") || twoCategory.equals("X")){
 			return 1;
 		}else{
 			return 0;
@@ -138,38 +137,68 @@ public class testQFunction {
 	/**
 	 * 不同于Q函数，我们根据软件的高内聚、低耦合定义了一个衡量标准
 	 */
-	public int modelFunction(
-			HashMap<String, ArrayList<AdjArrayObject>> categoryResultList,
-			ArrayList<AdjArrayObject>[] outDegreeList,
-			HashMap<String, HashMap<String, String>> resultMap) {
-
-		int result = 1;
-		for (Entry<String, ArrayList<AdjArrayObject>> oneCateList : categoryResultList.entrySet()) {
-
-			System.out.println("The Category is " + oneCateList.getKey());
-			int inNum = 0;
-			int outNum = 0;
-			ArrayList<AdjArrayObject> resultList = oneCateList.getValue();
-			for (AdjArrayObject node : resultList) {
-				System.out.println("    node is  " + node.getNodeIndex() + "     Weight " + node.getNodeWeight());
-				// 按照模块中的每个节点的出度内外比例计算
-				ArrayList<AdjArrayObject> list = outDegreeList[node
-						.getNodeIndex()];
-				if (list != null && list.size() != 0) {
-					for (AdjArrayObject adj : list) {
-						System.out.println(adj.getNodeIndex());
-						if (resultList.contains(adj)) {
-							inNum += 1;
-						} else {
-							outNum += 1;
-						}
-					}
-				} else {
-					continue;
+	public float  couplingAndcohesion(){
+		float ccQ = 0;
+		float ccTotal = 0;
+		
+		//遍历有向边的信息
+		for(edge e :Edges){
+			//初始化源点和终点
+			Knode  start = new Knode();
+			start.setNodeIndex(e.getS_node());
+			Knode end = new Knode();
+			end.setNodeIndex(e.getE_node());
+			int weight = e.getWeight();
+			
+			ccQ += (float)1 * KroneckerFun(start, end);
+			ccTotal += (float)1;
+		}
+		
+		ccQ = ccQ/ccTotal;
+		
+		return ccQ;
+	}
+	
+	
+	/**
+	 * 衡量软件节点的依赖集合是否在当前模块中
+	 * 20150128修改，更改出度邻居为BDF邻居
+	 */
+	public float modelFunction() {
+		float Q = 0;
+		int in = 0;
+		int out = 0;
+		
+		for(Knode node : sourcedata){
+			BDFResultNode BDFser = new BDFResultNode();
+			BDFser.setNodeIndex(node.getNodeIndex());
+			int index = BDFReuslt.indexOf(BDFser);
+			BDFResultNode nodeBDF = BDFReuslt.get(index);
+			if(nodeBDF==null) continue;
+			String[] adj = nodeBDF.getNodeResult().split(",");
+			for(String e : adj){
+				Knode outnode = new Knode();
+				outnode.setNodeIndex(Integer.parseInt(e));
+				if(KroneckerFun(node, outnode)==1){
+					in += 1;
+				}else{
+					out += 1;
 				}
 			}
-			System.out.println("  in = " + inNum + "  out = " + outNum);
+			
 		}
-		return 0;
+		Q = (float)in/(in + out);
+		return Q;
 	}
+
+
+	public ArrayList<BDFResultNode> getBDFReuslt() {
+		return BDFReuslt;
+	}
+
+
+	public void setBDFReuslt(ArrayList<BDFResultNode> bDFReuslt) {
+		BDFReuslt = bDFReuslt;
+	}
+
 }

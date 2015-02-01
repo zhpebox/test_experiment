@@ -31,6 +31,15 @@ public class BDFResultNode {
 		this.nodeResult = nodeReString;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof BDFResultNode){
+			BDFResultNode u = (BDFResultNode) obj;
+			return this.getNodeIndex() == u.getNodeIndex();
+		}
+		return super.equals(obj);
+	}
+
 	public int getNodeBranch() {
 		return nodeBranch;
 	}

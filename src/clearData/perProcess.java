@@ -126,12 +126,12 @@ public class perProcess {
 	
 	public static void main(String[] args) {
 		
-		String ReadfilePath = "1.27";
+		String ReadfilePath = "188";
 		//读取DOT文件，得出点集合，边集合，输出到指定文件
 		try{
-			for(int i=1;i<=7;i++){//C:\Users\Administrator\Desktop\TAR\tar-1.12Expriment\1
-				FileInputStream in = new FileInputStream("C:\\Users\\Administrator\\Desktop\\TAR\\tar-"+ReadfilePath+"Expriment\\"+i+"\\graph.dot");
-				System.out.println("C:\\Users\\Administrator\\Desktop\\TAR\\tar-"+ReadfilePath+"Expriment\\"+i+"\\graph.dot");
+			for(int i=1;i<=7;i++){//FileInputStream in = new FileInputStream("C:\\Users\\Administrator\\Desktop\\tar7\\"+ReadfilePath+"\\"+i+"\\graph.dot");
+				FileInputStream in = new FileInputStream("C:\\Users\\Administrator\\Desktop\\tar7\\"+ReadfilePath+"\\"+i+"\\graph.dot");
+				System.out.println("C:\\Users\\Administrator\\Desktop\\tar7\\"+ReadfilePath+"\\"+i+"\\graph.dot");
 		//		System.out.println("C:\\Users\\Administrator\\Desktop\\TAR\\tar-"+ReadfilePath+"Expriment\\"+ReadfilePath+"Newgraph.dot");
 				BufferedInputStream input = new BufferedInputStream(in);
 				
@@ -168,9 +168,9 @@ public class perProcess {
 			newDot = newDot + e.getStartNode()  +" -> "+e.getEndNode()+"  [label=\""+e.getWeight()+" calls\" fontsize=\"10\"]\n ";
 		}
 		newDot = newDot + "}";
-		//输出序号化的dot文件
-		utilBean.outNewDot(newDot,"C:\\Users\\Administrator\\Desktop\\TAR\\tar-"+ReadfilePath+"Expriment\\"+ReadfilePath+"Newgraph.dot");
-		System.out.println("C:\\Users\\Administrator\\Desktop\\TAR\\tar-"+ReadfilePath+"Expriment\\"+ReadfilePath+"Newgraph.dot");
+		//输出序号化的dot文件  C:\Users\Administrator\Desktop\tar7\124
+		utilBean.outNewDot(newDot,"C:\\Users\\Administrator\\Desktop\\tar7\\"+ReadfilePath+"\\"+ReadfilePath+"Newgraph.dot");
+		System.out.println("C:\\Users\\Administrator\\Desktop\\tar7\\"+ReadfilePath+"\\"+ReadfilePath+"Newgraph.dot");
 		System.out.println("//////////////////////////////////////////////////////////////////////////////////////////////////");
 	}
 }

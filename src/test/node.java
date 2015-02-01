@@ -1,9 +1,20 @@
 package test;
 
+import KNNpackage.Knode;
+
 public class node {
 
 	private int index;
 	private String Nname;
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof node){
+			node u = (node) obj;
+			return this.index == u.getIndex();
+		}
+		return super.equals(obj);
+	}
 
 	public int getIndex() {
 		return index;

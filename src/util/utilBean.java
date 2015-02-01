@@ -70,7 +70,7 @@ public class utilBean {
 	    				Method getMethod = c.getMethod(fieldGetterName, new Class[]{});
 	    				Method setMethod = c.getMethod(fieldSetterName, new Class[]{type});
 	    				Object value = getMethod.invoke(currentOne,  new Object[] {});
-	    			//	properityResult = properityResult + "   " +fieldName+" : "+value.toString()+" ";
+	    				properityResult = properityResult + "   " +fieldName+" : "+value.toString()+" ";
 	    				properityResult = properityResult + "  "+value.toString()+" ";
 		    		}
 		    		properityResult += " \n";

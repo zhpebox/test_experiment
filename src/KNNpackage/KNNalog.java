@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import AdjList.AdjArrayObject;
+import test.BDFResultNode;
 import test.edge;
 import test.node;
 import util.testQFunction;
@@ -34,7 +35,8 @@ public class KNNalog {
 	private HashMap<String,HashMap<String,String>> resultMap;
 	//分类存储结果集
 	private HashMap<String,ArrayList<AdjArrayObject>> categoryResultList;
-	
+	//广度优先遍历结果
+	private ArrayList<BDFResultNode> BDFReuslt ;
 	
 	public ArrayList<node> getNodes() {
 		return Nodes;
@@ -288,23 +290,24 @@ public class KNNalog {
 	 * 输出当前结果集reusultMap的结果
 	 * author ZHP
 	 * 2014年12月8日
-	 * @param outStyle   1：按照类型输出
+	 * @param outStyle   0：按照类型输出
 	 */
 	public void outResultSet(int outStyle){
 		
 		Iterator<Entry<String,HashMap<String,String>>> it = resultMap.entrySet().iterator();
-		while(it.hasNext()){
-			Entry<String,HashMap<String,String>> entry = it.next();
-			System.out.print("\ncurrentNode is "+entry.getKey());
-			HashMap<String,String> resultInfo = entry.getValue();
-			for(Entry<String,String> e : resultInfo.entrySet()){
-				System.out.print(" ->"+e.getKey()+"  : "+e.getValue()+"    ");
+		categoryResultList = new HashMap<String, ArrayList<AdjArrayObject>>();
+		if(outStyle==1){
+			while(it.hasNext()){
+				Entry<String,HashMap<String,String>> entry = it.next();
+				System.out.print("\ncurrentNode is "+entry.getKey());
+				HashMap<String,String> resultInfo = entry.getValue();
+				for(Entry<String,String> e : resultInfo.entrySet()){
+					System.out.print(" ->"+e.getKey()+"  : "+e.getValue()+"    ");
+				}
 			}
-		}
 		//按类型输出结果
-		if(outStyle !=1){
+		}else{
 			System.out.println("\n\n按类型输出结果集");
-			categoryResultList = new HashMap<String, ArrayList<AdjArrayObject>>();
 			for(Knode currentCategory : categorynode){
 				//暂存当前类别的结果集
 				ArrayList<AdjArrayObject> currentList = new ArrayList<AdjArrayObject>();
@@ -326,11 +329,11 @@ public class KNNalog {
 						currentList.add(cateOne);
 					}
 				}
-				System.out.println("\nZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ   Catagory : "
-							+currentCategory.getCategoryName()+" number =  "+num);
+				System.out.println("\nZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ   Catagory : " +currentCategory.getCategoryName()+" number =  "+num);
 				categoryResultList.put(currentCategory.getCategoryName(), currentList);
 			}
-			//剩余未分类的节点
+			//剩余未分类的节点//暂存当前类别的结果集
+			ArrayList<AdjArrayObject> currentList = new ArrayList<AdjArrayObject>();
 			it = resultMap.entrySet().iterator();
 			int num = 0;
 			while(it.hasNext()){
@@ -342,11 +345,31 @@ public class KNNalog {
 					for(Entry<String,String> e : adjnode.entrySet()){
 						System.out.print(" ->"+e.getKey()+"  : "+e.getValue()+"    ");
 					}
+					//生成节点放入当前List
+					AdjArrayObject cateOne = new AdjArrayObject();
+					cateOne.setNodeIndex(Integer.parseInt(entry.getKey()));
+					cateOne.setNodeWeight(Integer.parseInt(adjnode.get("weight")));
+					currentList.add(cateOne);
 				}
 			}
+			categoryResultList.put("X", currentList);
 			System.out.println("\nZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ   Catagory : "
 						+" X    number =  "+num);
 			
+		}
+	}
+	
+	/**
+	 * 输出cateList各个类型的个数
+	 * author ZHP
+	 * 2015年1月31日
+	 */
+	public void outCataListResult(){
+//		categoryResultList = new HashMap<String, ArrayList<AdjArrayObject>>();
+		Iterator<Entry<String,ArrayList<AdjArrayObject>>> it = categoryResultList.entrySet().iterator();
+		while(it.hasNext()){
+			Entry<String,ArrayList<AdjArrayObject>> entry = it.next();
+			System.out.println("类型：  "+entry.getKey()+" 数量：  "+entry.getValue().size());
 		}
 	}
 	
@@ -354,9 +377,21 @@ public class KNNalog {
 		
 		testQFunction Q = new testQFunction(resultMap, finalSourcedata, Nodes, Edges, inDegreeList, outDegreeList);
 		testQunweight UQ = new testQunweight(resultMap, finalSourcedata, Nodes, Edges, inDegreeList, outDegreeList);
-//		return UQ.softwareQFunction();
+		
 		return Q.softwareQFunction();
+		
 	}
+	
+	public float computeOUT(){
+		testQFunction Q = new testQFunction(resultMap, finalSourcedata, Nodes, Edges, inDegreeList, outDegreeList);
+		Q.setBDFReuslt(BDFReuslt);
+		return Q.modelFunction();
+	}
+	
+//	public float computeBDF(){
+//		
+//	}
+	
 	
 	//getters  and setters
 	public ArrayList<Knode> getSourcedata() {
@@ -416,6 +451,14 @@ public class KNNalog {
 
 	public void setOutDegreeList(ArrayList<AdjArrayObject>[] outDegreeList) {
 		this.outDegreeList = outDegreeList;
+	}
+
+	public ArrayList<BDFResultNode> getBDFReuslt() {
+		return BDFReuslt;
+	}
+
+	public void setBDFReuslt(ArrayList<BDFResultNode> bDFReuslt) {
+		BDFReuslt = bDFReuslt;
 	}
 
 	
